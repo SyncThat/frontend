@@ -1,16 +1,16 @@
 <template>
 	<div class="flex text-white">
-		<div class="w-1/4 h-screen bg-slate-800 p-8">
+		<div class="w-3/12 h-screen bg-slate-800">
 			<PlayList />
 		</div>
 		
-		<div class="w-1/2 h-screen bg-slate-700">
+		<div class="w-7/12 h-screen bg-slate-700">
 			<Player />
 
 			<Chat />
 		</div>
 
-		<div class="w-1/4 h-screen bg-slate-800 p-8">
+		<div class="w-2/12 h-screen bg-slate-800">
 			<Users />
 		</div>
 	</div>

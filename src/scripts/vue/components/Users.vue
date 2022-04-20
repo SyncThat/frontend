@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <h2 class="text-3xl font-bold">Users</h2>
+    <div class="p-8 overflow-auto">
+        <h2 class="text-2xl font-bold">Users</h2>
     </div>
 </template>
 
