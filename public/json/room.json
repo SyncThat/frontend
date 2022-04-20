@@ -1,0 +1,39 @@
+{
+    "name": "Cut my life into pieces",
+    "users": [
+        {
+            "id": 12345,
+            "name": "HorseFighter"
+        },
+        {
+            "id": 54321,
+            "name": "Rick Astley"
+        }
+    ],
+    "playlist": [
+        {
+            "key": "soundcloud_12345",
+            "downloadProgrss": 100,
+            "artist": "Rick Astley",
+            "name": "Never Gonna Give You Up"
+        },
+        {
+            "key": "youtube_12345",
+            "downloadProgrss": 80,
+            "artist": "Opgezwolle",
+            "name": "Rustug"
+        },
+        {
+            "key": "youtube_12345",
+            "downloadProgrss": 80,
+            "artist": "Steen",
+            "name": "Utrecht jong"
+        }
+    ],
+    "currentSong": {
+        "song": "soundcloud_12345",
+        "timestamp": 280,
+        "state": "playing",
+        "unix": 1650487525
+    }
+}

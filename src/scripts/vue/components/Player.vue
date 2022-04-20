@@ -1,21 +1,22 @@
 <template>
-    <div class="flex gap-4 p-8 bg-grey-900">
-        <div class="flex flex-col justify-between w-2/3 my-6">
-            <div class="flex gap-2 mb-6">
-                <Button @click="playHandler()">Play</Button>
+    <div class="flex items-center gap-4 p-8 bg-grey-900">
+        <div class="flex flex-col justify-between w-3/4 my-6">
+            <div class="flex items-center gap-4 mb-8">
+                <div>
+                    <Button @click="pauseHandler()" v-if="isPlaying">Pause</Button>
+                    <Button @click="playHandler()" v-else>Play</Button>
+                </div>
 
-                <Button @click="pauseHandler()">Pause</Button>
-            </div>
-
-            <div class="mb-8">
-                <span class="block">Rick Astley</span>
-                <span class="block text-grey-500 text-sm">Never Gonna Give You Up</span>
+                <div>
+                    <span class="block">Rick Astley</span>
+                    <span class="block text-grey-500 text-sm">Never Gonna Give You Up</span>
+                </div>
             </div>
 
             <div class="mb-6" id="wave" ref="waveElement"></div>
         </div>
 
-        <figure class="relative w-1/3">
+        <figure class="w-1/4">
             <img src="/placeholders/cover.jpg" alt="" class="w-full">
         </figure>
     </div>
@@ -30,15 +31,18 @@
     import Button from '../parts/Button.vue';
     
     const waveElement = ref(null);
+    const isPlaying = ref(false);
 
     let waveSurfer:WaveSurfer;
 
     function playHandler() {
         waveSurfer.play();
+        isPlaying.value = true;
     }
 
     function pauseHandler() {
         waveSurfer.pause();
+        isPlaying.value = false;
     }
 
     onMounted(() => {  
@@ -57,9 +61,9 @@
         }
 
         getApi(headers, '/json/waveform.json').then(peaks => {
-            waveSurfer.load('https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3', peaks.data, 'metadata')
+            waveSurfer.load('https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3', peaks.data, 'metadata');
 
-            console.log(waveSurfer.getDuration());
+            // console.log(waveSurfer.getDuration());
             
         }).catch((e) => {
             console.error('error', e);
