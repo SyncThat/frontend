@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-	import PlayList from '../vue/components/PlayList.vue';
+	import PlayList from './components/Playlist.vue';
 	import Player from '../vue/components/Player.vue';
 	import Chat from '../vue/components/Chat.vue';
 	import Users from '../vue/components/Users.vue';
