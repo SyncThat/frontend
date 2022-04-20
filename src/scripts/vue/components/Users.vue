@@ -10,12 +10,13 @@
                 </div>
             </div>
         </div>
-        <div>
-            Login / Sign up Modal
+        <div class="flex">
+            <Button :title="'Login / Sign up'"/>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+    import Button from '../parts/Button.vue';
     import User from '../parts/User.vue';
 </script>
