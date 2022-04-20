@@ -1,20 +1,24 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from '../vue/components/HelloWorld.vue';
-</script>
-
 <template>
-	<HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+	<div class="flex text-white">
+		<div class="w-1/4 h-screen bg-slate-800 p-8">
+			<PlayList />
+		</div>
+		
+		<div class="w-1/2 h-screen bg-slate-700">
+			<Player />
+
+			<Chat />
+		</div>
+
+		<div class="w-1/4 h-screen bg-slate-800 p-8">
+			<Users />
+		</div>
+	</div>
 </template>
 
-<style>
-#app {
-	font-family: Avenir, Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
-	color: #2c3e50;
-	margin-top: 60px;
-}
-</style>
+<script setup lang="ts">
+	import PlayList from '../vue/components/PlayList.vue';
+	import Player from '../vue/components/Player.vue';
+	import Chat from '../vue/components/Chat.vue';
+	import Users from '../vue/components/Users.vue';
+</script>
