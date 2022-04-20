@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="flex">
-            <Button :title="'Login / Sign up'"/>
+            <Button>Login / Sign up</Button>
         </div>
     </div>
 </template>
