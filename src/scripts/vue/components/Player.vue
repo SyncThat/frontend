@@ -56,7 +56,7 @@
             Accept: 'application/json'
         }
 
-        getApi(headers, '/placeholder.json').then(peaks => {
+        getApi(headers, '/json/waveform.json').then(peaks => {
             waveSurfer.load('https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3', peaks.data, 'metadata')
 
             console.log(waveSurfer.getDuration());
