@@ -34,24 +34,4 @@
 	const me = ref<PrivateUserData|undefined>();
 
 	const conn = new RoomConnection(1, queue, currentSong, users, me);
-
-	const roomData = ref({
-		name: String,
-  		playlist: Object,
-		users: Object
-	});
-
-	onMounted(() => {  
-		const headers = {
-            Accept: 'application/json'
-        }
-
-		getApi(headers, '/json/room.json').then(response => {
-			console.log(response);
-			roomData.value = response;
-        }).catch((e) => {
-            console.error('error', e);
-        });
-	});
-
 </script>
