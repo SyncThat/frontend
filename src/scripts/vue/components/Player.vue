@@ -7,10 +7,13 @@
                     <Button @click="playHandler()" v-else>Play</Button>
                 </div>
 
-                <div>
-                    <span class="block">Rick Astley</span>
-                    <span class="block text-grey-500 text-sm">Never Gonna Give You Up</span>
+                <div v-if="currentSong">
+                    <span class="block">{{  currentSong.song.title }}</span>
+                    <span class="block text-grey-500 text-sm">-</span>
                 </div>
+				<div v-if='!currentSong'>
+					<span class="block">Nothing playing right now</span>
+				</div>
             </div>
 
             <div class="mb-6" id="wave" ref="waveElement"></div>
@@ -24,23 +27,42 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
     import { PropType } from '@vue/runtime-core';
 
     import WaveSurfer from 'wavesurfer.js';
-    import { Song } from '../../ts/Modals';
+	import { CurrentSong, Song } from '../../ts/Modals';
 
     import Button from '../parts/Button.vue';
+import getApi from '../../ts/helpers/getApi';
     
     const waveElement = ref(null);
     const audioElement = ref(null)
     const isPlaying = ref(false);
+
+	let waveSurfer:WaveSurfer;
+	let currentLoadedWaveform = '';
     
     const props = defineProps({
-        'currentSong': Object as PropType<Song>
+        'currentSong': Object as PropType<CurrentSong>
     });
 
-    let waveSurfer:WaveSurfer;
+	watch(() => props.currentSong, (newValue: CurrentSong|undefined, oldValue: CurrentSong|undefined) => {
+		if (newValue) {
+			if (!oldValue || oldValue.song.key !== newValue.song.key) {
+				waveSurfer.load(`http://localhost:3555/songs/stream/${newValue.song.key}.mp3`);
+				waveSurfer.play();
+			}
+			if (newValue.song.waveformGenerated && currentLoadedWaveform !== newValue.song.key) {
+				currentLoadedWaveform = newValue.song.key;
+				getApi({ Accept: 'application/json' }, `http://localhost:3555/songs/stream/${newValue.song.key}.mp3`).then(peaks => {
+					waveSurfer.backend.setPeaks(peaks.data, newValue.song.durationInSeconds);
+					waveSurfer.drawBuffer();
+				});
+			}
+		}
+	});
+
 
     function playHandler() {
         waveSurfer.play();

@@ -7,7 +7,7 @@
                 <span class="absolute w-full h-px -bottom-3 bg-grey-700"></span>
             </div>
         </div>
-        <AddSong />
+        <AddSong @song="emit('add-song', $event)" />
     </div>
 </template>
 
@@ -16,6 +16,8 @@
     import AddSong from '../components/AddSong.vue';
     import { Song } from '../../ts/Modals';
     import { PropType } from 'vue';
+
+	const emit = defineEmits(['add-song'])
 
     const props = defineProps({
         'roomName': String,

@@ -23,6 +23,7 @@ export interface Song {
     durationInSeconds: number;
     /** Public ID of the user who requested it */
     requestedBy?: string;
+    waveformGenerated?: boolean;
 }
   
 export interface CurrentSong {

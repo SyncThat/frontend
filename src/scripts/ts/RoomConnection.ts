@@ -65,6 +65,12 @@ export class RoomConnection {
 
 		this.conn.connect();
 	}
+
+	downloadSong(song: string) {
+		this.conn.emit('queue-song', {
+			url: song,
+		});
+	}
 	
 	saveUser() {		
 		window.localStorage.setItem('existingUser', JSON.stringify({

@@ -20,12 +20,16 @@
     const headers = {
         Accept: 'application/json'
     }
+
+	const emit = defineEmits(['song'])
     
     function addSong() {
-        postApi(headers, 'https://example.com/answer', { url: songURL }).then(data => {
-            console.log(data); // JSON data parsed by `data.json()` call
-            songURL.value = '';
-            alert('Song Added!');
-        });
+		const url = songURL.value;
+		if (!url) {
+			return;
+		}
+
+		emit('song', url);
+
     }
 </script>

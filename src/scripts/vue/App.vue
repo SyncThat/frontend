@@ -1,7 +1,7 @@
 <template>
 	<div class="flex text-white">
 		<div class="w-3/12 h-screen bg-grey-800">
-			<Playlist :roomName="'wat'" :playlist="queue" />
+			<Playlist :roomName="'wat'" :playlist="queue" @add-song="downloadSong" />
 		</div>
 		
 		<div class="w-7/12 h-screen bg-grey-700">
@@ -33,5 +33,11 @@
 	const users = ref<User[]>();
 	const me = ref<PrivateUserData|undefined>();
 
+
 	const conn = new RoomConnection(1, queue, currentSong, users, me);
+
+	function downloadSong(song: string) {
+		conn.downloadSong(song);
+	}
+
 </script>
