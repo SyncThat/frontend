@@ -1,5 +1,5 @@
 export class Join {
-    constructor(public room: number, public name?: string, public privateid?: string) {}
+    constructor(public room: number, public name?: string, public privateId?: string) {}
 }
 
 export interface PrivateUserData {
