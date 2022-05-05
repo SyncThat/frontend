@@ -5,7 +5,7 @@
 		</div>
 		
 		<div class="w-7/12 h-screen bg-grey-700">
-			<Player />
+			<Player :currentSong="currentSong" />
 
 			<Chat />
 		</div>
@@ -26,14 +26,14 @@
 	import Chat from '../vue/components/Chat.vue';
 	import Users from '../vue/components/Users.vue';
 	import { RoomConnection } from '../ts/RoomConnection';
+	import { CurrentSong, PrivateUserData, Song, User} from '../ts/Modals';
 
-	const queue = ref<any[]>([]);
-	const currentSong = ref<object|null>(null);
-	const users = ref<any>();
-	const me = ref<object|undefined>();
+	const queue = ref<Song[]|undefined>();
+	const currentSong = ref<CurrentSong|undefined>();
+	const users = ref<User[]>();
+	const me = ref<PrivateUserData|undefined>();
 
 	const conn = new RoomConnection(1, queue, currentSong, users, me);
-
 
 	const roomData = ref({
 		name: String,
@@ -41,14 +41,10 @@
 		users: Object
 	});
 
-
-
-
 	onMounted(() => {  
 		const headers = {
             Accept: 'application/json'
         }
-
 
 		getApi(headers, '/json/room.json').then(response => {
 			console.log(response);

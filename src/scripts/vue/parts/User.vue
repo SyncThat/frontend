@@ -9,8 +9,10 @@
 </template>
 
 <script setup lang="ts">
-    
+    import { User } from '../../ts/Modals';
+    import { PropType } from '@vue/runtime-core';
+
     const props = defineProps({
-        'user': Object
+        'user': Object as PropType<User>
     });
 </script>

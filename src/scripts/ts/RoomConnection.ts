@@ -1,20 +1,20 @@
 import { io, Socket } from 'socket.io-client';
+import { CurrentSong, Join, Notice, PrivateUserData, Song, User } from './Modals';
 import { Ref, ref, UnwrapRef } from 'vue';
 
 export class RoomConnection {
 
 	private conn: Socket;
-	private queue: Ref<any[]>;
-	private currentSong: Ref<object|null>;
-	private users: Ref<any[]>;
-	private me: Ref<object|undefined>;
+	private queue: Ref<Song[]|undefined>;
+	private currentSong: Ref<CurrentSong|undefined>;
+	private users: Ref<User[]|undefined>;
+	private me: Ref<PrivateUserData|undefined>;
 
-	constructor(room: number, queue: Ref<UnwrapRef<any[]>>, currentSong: Ref<UnwrapRef<object | null>>, users: Ref<any>, me: Ref<object | undefined>) {
+	constructor(room: number, queue: Ref<UnwrapRef<Song[]|undefined>>, currentSong: Ref<UnwrapRef<CurrentSong | undefined>>, users: Ref<User[]|undefined>, me: Ref<PrivateUserData | undefined>) {
 		this.queue = queue;
 		this.currentSong = currentSong;
 		this.users = users;
 		this.me = me;
-
 
 		this.conn = io('localhost:3555',{
 			path: '/rooms/ws',
@@ -23,45 +23,53 @@ export class RoomConnection {
 
 		this.conn.on('connect', () => {
 			console.log('Connected as', this.conn.id);
-			this.conn.emit('join-room', { room });
+
+			const existingUser = window.localStorage.getItem('existingUser');
+			
+			this.conn.emit('join-room', new Join(room, undefined, existingUser.privateId));
+		})
+
+		this.conn.on('you', (user:PrivateUserData) => {
+			console.log('You:', user.name);
+			this.me.value = user;
+
+			this.saveUser();
 		})
 
 		this.conn.on('disconnected', () => {
 			console.log('Disconnected');
 		})
 
-		this.conn.on('users', users => {
+		this.conn.on('users', (users:User[]) => {
 			console.log('Users update:', users);
 			this.users.value = users;
 		});
 
-		this.conn.on('current-song', data => {
+		this.conn.on('current-song', (data:CurrentSong) => {
 			console.log('Current song', data);
 			this.currentSong.value = data;
 		})
 
-		this.conn.on('you', user => {
-			console.log('You:', user);
-			this.me.value = user;
-		})
-
-		this.conn.on('queue', queue => {
+		this.conn.on('queue', (queue:Song[]) => {
 			console.log('The queue:', queue);
 			this.queue.value = queue;
 		})
 
-		this.conn.on('notice', notice => console.log(notice));
+		this.conn.on('notice', (notice:Notice) => {
+			console.log(notice);
+		})
 
 		console.log(this.conn);
 
 		this.conn.connect();
 	}
-
-
-
-
-
+	
+	saveUser() {
+		window.localStorage.setItem('existingUser', JSON.stringify({
+			privateId: this.me.value?.privateId,
+			publicId: this.me.value?.privateId,
+			name: this.me.value?.name,
+			admin: this.me.value?.admin,
+		}));
+	}
 }
-
-
-

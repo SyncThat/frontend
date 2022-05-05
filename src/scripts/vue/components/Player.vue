@@ -14,6 +14,7 @@
             </div>
 
             <div class="mb-6" id="wave" ref="waveElement"></div>
+            <audio ref="audioElement" style="display: none" preload="false" src="https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3"></audio>
         </div>
 
         <figure class="w-1/4">
@@ -31,6 +32,7 @@
     import Button from '../parts/Button.vue';
     
     const waveElement = ref(null);
+    const audioElement = ref(null)
     const isPlaying = ref(false);
 
     let waveSurfer:WaveSurfer;
@@ -49,11 +51,12 @@
         waveSurfer = WaveSurfer.create({
             container: waveElement.value,
             backend: 'MediaElement',
-            barWidth: 2,
+            barWidth: 1,
             barHeight: 1, // the height of the wave
             barGap: 2,
-            progressColor: '#0E7490',
-            waveColor: '#B4B7BC'
+            progressColor: '#57ECED',
+            waveColor: '#B4B7BC',
+            normalize: true
         }); 
         
         const headers = {
@@ -61,7 +64,12 @@
         }
 
         getApi(headers, '/json/waveform.json').then(peaks => {
-            waveSurfer.load('https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3', peaks.data, 'metadata');
+            waveSurfer.load('https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3', [], 'metadata');
+
+            setTimeout(() => {
+                waveSurfer.backend.setPeaks(peaks.data, 100);
+                waveSurfer.drawBuffer();
+            }, 5000);
 
             // console.log(waveSurfer.getDuration());
             

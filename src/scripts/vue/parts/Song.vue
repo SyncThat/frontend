@@ -11,8 +11,10 @@
 </template>
 
 <script setup lang="ts">
+    import { PropType } from '@vue/runtime-core';
+    import {Song} from '../../ts/Modals';
     
     const props = defineProps({
-        'song': Object
+        'song': Object as PropType<Song>
     });
 </script>
