@@ -25,15 +25,20 @@
 
 <script setup lang="ts">
     import { onMounted, ref } from 'vue';
-    import WaveSurfer from 'wavesurfer.js';
+    import { PropType } from '@vue/runtime-core';
 
-    import getApi from '../../ts/helpers/getApi'; 
+    import WaveSurfer from 'wavesurfer.js';
+    import { Song } from '../../ts/Modals';
 
     import Button from '../parts/Button.vue';
     
     const waveElement = ref(null);
     const audioElement = ref(null)
     const isPlaying = ref(false);
+    
+    const props = defineProps({
+        'currentSong': Object as PropType<Song>
+    });
 
     let waveSurfer:WaveSurfer;
 
@@ -63,18 +68,18 @@
             Accept: 'application/json'
         }
 
-        getApi(headers, '/json/waveform.json').then(peaks => {
-            waveSurfer.load('https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3', [], 'metadata');
+        // getApi(headers, '/json/waveform.json').then(peaks => {
+        //     waveSurfer.load('https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3', [], 'metadata');
 
-            setTimeout(() => {
-                waveSurfer.backend.setPeaks(peaks.data, 100);
-                waveSurfer.drawBuffer();
-            }, 5000);
+        //     setTimeout(() => {
+        //         waveSurfer.backend.setPeaks(peaks.data, 100);
+        //         waveSurfer.drawBuffer();
+        //     }, 5000);
 
-            // console.log(waveSurfer.getDuration());
+        //     // console.log(waveSurfer.getDuration());
             
-        }).catch((e) => {
-            console.error('error', e);
-        });
+        // }).catch((e) => {
+        //     console.error('error', e);
+        // });
     });
 </script>

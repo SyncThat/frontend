@@ -69,7 +69,7 @@ export class RoomConnection {
 	saveUser() {		
 		window.localStorage.setItem('existingUser', JSON.stringify({
 			privateId: this.me.value?.privateId,
-			publicId: this.me.value?.privateId,
+			publicId: this.me.value?.publicId,
 			name: this.me.value?.name,
 			admin: this.me.value?.admin,
 		}));

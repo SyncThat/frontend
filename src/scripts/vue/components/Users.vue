@@ -17,10 +17,11 @@
 </template>
 
 <script setup lang="ts">
+    import { PropType } from '@vue/runtime-core';
+    
     import Button from '../parts/Button.vue';
     import UserItem from '../parts/User.vue';
     import { User } from '../../ts/Modals';
-    import { PropType } from '@vue/runtime-core';
 
     const props = defineProps({
         'users': Array as PropType<Array<User>>
