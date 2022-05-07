@@ -12,7 +12,8 @@ export interface PrivateUserData {
 export interface User {
     id: string,
     name: string,
-    connected: boolean
+    connected: boolean,
+    admin: boolean,
 }
 
 export interface Song {

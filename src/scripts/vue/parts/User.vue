@@ -1,11 +1,14 @@
 <template>
     <div class="flex items-center" v-if='user'>
         <figure class="relative mr-3">
+			<!-- TODO: Emoticon image -->
             <img src="/placeholders/user.jpg" alt="" class="w-10 h-10 rounded-full">
             <span class="status absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ring-4 ring-grey-800"
 				  :class="{ 'bg-red-500': !user.connected, 'bg-lime-500': user.connected }"></span>
         </figure>
-        <span>{{user.name}}</span>
+        <span :class="{ 'text-cyan-300': user.admin }">
+			{{user.name}}
+		</span>
     </div>
 </template>
 

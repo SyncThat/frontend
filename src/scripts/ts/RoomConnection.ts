@@ -65,6 +65,10 @@ export class RoomConnection {
 		this.conn.connect();
 	}
 
+	addNoticeCallback(callback: (notice: Notice) => void): void {
+		this.conn.on('notice', callback);
+	}
+
 	downloadSong(song: string) {
 		this.conn.emit('queue-song', {
 			url: song,
@@ -78,7 +82,12 @@ export class RoomConnection {
 		})
 	}
 
-
+	becomeAdmin(password: string): void {
+		console.log('Become admin', password);
+		this.conn.emit('become-admin', {
+			password,
+		});
+	}
 	
 	saveUser() {		
 		window.localStorage.setItem('existingUser', JSON.stringify({
