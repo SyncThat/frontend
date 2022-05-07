@@ -24,18 +24,17 @@ export class RoomConnection {
 		this.conn.on('connect', () => {
 			console.log('Connected as', this.conn.id);
 
-			const existingUserId = this.getUser() ? this.getUser().privateId : undefined;
-					
-			this.conn.emit('join-room', new Join(room, undefined, existingUserId));
+			const user = this.getUser();
+
+			this.conn.emit('join-room', new Join(room, user?.name, user?.privateId));
 		})
 
 		this.conn.on('you', (user:PrivateUserData) => {
-			console.log('You:', user.name);
+			console.log('You:', user);
 			this.me.value = user;
 
-			if(!this.getUser()) {				
-				this.saveUser();
-			}
+			// Always save the user data (as the private ID might be refreshed)
+			this.saveUser();
 		})
 
 		this.conn.on('disconnected', () => {
@@ -90,8 +89,14 @@ export class RoomConnection {
 		}));
 	}
 
-	getUser() {
+	getUser(): StoredUser|undefined {
 		let item = window.localStorage.getItem('existingUser');
 		return item ? JSON.parse(item) : undefined;
 	}
 }
+
+interface StoredUser {
+	privateId?: string,
+	name?: string;
+}
+
