@@ -4,6 +4,7 @@
     "version": "0.0.1",
     "scripts": {
         "dev": "vite",
+        "watch": "vite",
         "build": "vue-tsc --noEmit && vite build",
         "preview": "vite preview"
     },
@@ -13,6 +14,7 @@
         "wavesurfer.js": "^6.1.0"
     },
     "devDependencies": {
+        "@types/wavesurfer.js": "^6.0.3",
         "@typescript-eslint/eslint-plugin": "^5.20.0",
         "@typescript-eslint/parser": "^5.20.0",
         "@vitejs/plugin-vue": "^2.3.1",

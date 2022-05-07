@@ -5,7 +5,7 @@
 		</div>
 		
 		<div class="w-7/12 h-screen bg-grey-700">
-			<Player :currentSong="currentSong" />
+			<Player :currentSong="currentSong" :conn='conn' />
 
 			<Chat />
 		</div>

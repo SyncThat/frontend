@@ -71,6 +71,15 @@ export class RoomConnection {
 			url: song,
 		});
 	}
+
+	skipToTimestamp(toSeconds: number, atTimestamp?: number): void {
+		this.conn.emit('skip-to-timestamp', {
+			toSeconds,
+			atTimestamp,
+		})
+	}
+
+
 	
 	saveUser() {		
 		window.localStorage.setItem('existingUser', JSON.stringify({
@@ -82,6 +91,7 @@ export class RoomConnection {
 	}
 
 	getUser() {
-		return JSON.parse(window.localStorage.getItem('existingUser'));
+		let item = window.localStorage.getItem('existingUser');
+		return item ? JSON.parse(item) : undefined;
 	}
 }

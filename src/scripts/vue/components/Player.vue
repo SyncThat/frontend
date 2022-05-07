@@ -17,7 +17,7 @@
             </div>
 
             <div class="mb-6" id="wave" ref="waveElement"></div>
-            <audio ref="audioElement" style="display: none" preload="false" src="https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3"></audio>
+            <audio ref="audioElement" style="display: none" preload="false"></audio>
         </div>
 
         <figure class="w-1/4">
@@ -27,46 +27,91 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, Ref, ref, watch } from 'vue';
     import { PropType } from '@vue/runtime-core';
 
-    import WaveSurfer from 'wavesurfer.js';
 	import { CurrentSong, Song } from '../../ts/Modals';
 
     import Button from '../parts/Button.vue';
-import getApi from '../../ts/helpers/getApi';
-    
-    const waveElement = ref(null);
+	import getApi from '../../ts/helpers/getApi';
+
+	import WaveSurfer from 'wavesurfer.js';
+	import { RoomConnection } from '../../ts/RoomConnection';
+
+    const waveElement: Ref<HTMLElement|undefined> = ref(undefined);
     const audioElement = ref(null)
     const isPlaying = ref(false);
 
-	let waveSurfer:WaveSurfer;
-	let currentLoadedWaveform = '';
-    
+	// The wavesurfer instance.
+	let waveSurfer: WaveSurfer;
+	// ID of the currently loaded/loading waveform (if any)
+	let currentLoadedWaveform: string|undefined = undefined;
+	let playDelayTimeout: NodeJS.Timeout|undefined = undefined;
+
     const props = defineProps({
-        'currentSong': Object as PropType<CurrentSong>
+        'currentSong': Object as PropType<CurrentSong>,
+		'conn': Object as PropType<RoomConnection>,
     });
 
 	watch(() => props.currentSong, (newValue: CurrentSong|undefined, oldValue: CurrentSong|undefined) => {
-		if (newValue) {
-			if (!oldValue || oldValue.song.key !== newValue.song.key) {
-				waveSurfer.load(`http://localhost:3555/songs/stream/${newValue.song.key}.mp3`);
-				waveSurfer.play();
-			}
-			if (newValue.song.waveformGenerated && currentLoadedWaveform !== newValue.song.key) {
-				currentLoadedWaveform = newValue.song.key;
-				getApi({ Accept: 'application/json' }, `http://localhost:3555/songs/stream/${newValue.song.key}.mp3`).then(peaks => {
-					waveSurfer.backend.setPeaks(peaks.data, newValue.song.durationInSeconds);
-					waveSurfer.drawBuffer();
-				});
+		handlePlayingSong(newValue, oldValue)
+	});
+
+	function handlePlayingSong(current: CurrentSong|undefined, previous: CurrentSong|undefined = undefined) {
+		if (playDelayTimeout) {
+			clearTimeout(playDelayTimeout);
+		}
+
+		if (!current) {
+			// Nothing is playing. Wipe the waveform (if there's one).
+			waveSurfer.empty();
+			currentLoadedWaveform = undefined;
+			return;
+		}
+
+		// Check if a new song should be loaded
+		if (!previous || previous.song.key !== current.song.key) {
+			waveSurfer.stop();
+			waveSurfer.load(`http://localhost:3555/songs/stream/${current.song.key}.mp3`, [], 'auto', current.song.durationInSeconds);
+		}
+		// Check if a new Waveform is available that we've currently not loaded in yet.
+		if (current.song.waveformGenerated && currentLoadedWaveform !== current.song.key) {
+			currentLoadedWaveform = current.song.key;
+			getApi({ Accept: 'application/json' }, `http://localhost:3555/songs/stream/${current.song.key}.json`).then(peaks => {
+				waveSurfer.backend.setPeaks(peaks.data, current.song.durationInSeconds);
+				waveSurfer.drawBuffer();
+			});
+		}
+
+		// Calculate where we are currently in the track and where we should be
+		const now = (new Date()).getTime();
+		if (now + 750 < current.eventTimestamp) {
+			console.log('Future...');
+			// Event in the future... Wait for it.
+			playDelayTimeout = setTimeout(() => {
+				waveSurfer.play(current.lastCurrentSeconds);
+			}, now - current.eventTimestamp);
+		} else {
+			// Calculate the number of seconds passed since the event
+			const secondsPassed = Math.max(0, Math.floor(( now - current.eventTimestamp ) / 1000 ));
+
+			// Check where we should be in the song
+			const shouldBeAtSeconds = current.lastCurrentSeconds + secondsPassed;
+
+			// Check if more than a second difference (or not paying)
+			const currentSeconds = waveSurfer.getCurrentTime();
+			const secondsOffset = Math.abs(shouldBeAtSeconds - currentSeconds);
+			if (secondsOffset > 1 || !waveSurfer.isPlaying()) {
+				console.log('Skipping to', shouldBeAtSeconds);
+				waveSurfer.play(shouldBeAtSeconds);
 			}
 		}
-	});
+	}
 
 
     function playHandler() {
-        waveSurfer.play();
         isPlaying.value = true;
+		handlePlayingSong(props.currentSong, props.currentSong);
     }
 
     function pauseHandler() {
@@ -74,34 +119,66 @@ import getApi from '../../ts/helpers/getApi';
         isPlaying.value = false;
     }
 
-    onMounted(() => {  
+    onMounted(() => {
+		const element = waveElement.value;
+		if (!element) {
+			return;
+		}
+
         waveSurfer = WaveSurfer.create({
-            container: waveElement.value,
+            container: element,
             backend: 'MediaElement',
             barWidth: 1,
             barHeight: 1, // the height of the wave
             barGap: 2,
             progressColor: '#57ECED',
             waveColor: '#B4B7BC',
-            normalize: true
+            normalize: true,
+			responsive: true,
+			mediaControls: true,
         }); 
-        
-        const headers = {
-            Accept: 'application/json'
-        }
 
-        // getApi(headers, '/json/waveform.json').then(peaks => {
-        //     waveSurfer.load('https://stoux.nl/music/MainConcernQBaseXtraRaw.mp3', [], 'metadata');
+		// Mount events
+		waveSurfer.on('audioprocess', (args: any) => {
+			// console.log('audioprocess', args);
+		})
 
-        //     setTimeout(() => {
-        //         waveSurfer.backend.setPeaks(peaks.data, 100);
-        //         waveSurfer.drawBuffer();
-        //     }, 5000);
+		waveSurfer.on('error', (args: any) => {
+			console.log('error', args);
+		})
+		waveSurfer.on('finish', (args: any) => {
+			console.log('finish', args);
+		})
+		waveSurfer.on('interaction', (args: any) => {
+			console.log('interaction', args);
+		})
+		waveSurfer.on('loading', (args: any) => {
+			console.log('loading', args);
+		})
+		waveSurfer.on('pause', (args: any) => {
+			console.log('pause', args);
+		})
+		waveSurfer.on('play', (args: any) => {
+			console.log('play', args);
+		})
+		waveSurfer.on('ready', (args: any) => {
+			console.log('ready', args, waveSurfer.isPlaying(), waveSurfer.isReady);
+		})
+		waveSurfer.on('seek', (args: any) => {
+			setTimeout(() => {
+				props.conn?.skipToTimestamp(waveSurfer.getCurrentTime());
+			});
 
-        //     // console.log(waveSurfer.getDuration());
-            
-        // }).catch((e) => {
-        //     console.error('error', e);
-        // });
+			console.log('seek', args);
+		})
+
+		waveSurfer.on('scroll', (args: any) => {
+			console.log('scroll', args);
+		})
+		waveSurfer.on('waveform-ready', (args: any) => {
+			console.log('waveform-ready', args);
+		})
+
+
     });
 </script>
