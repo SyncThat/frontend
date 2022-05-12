@@ -4,8 +4,8 @@
 			<Playlist :roomName="'wat'" :playlist="queue" @add-song="downloadSong" />
 		</div>
 		
-		<div class="w-7/12 h-screen bg-grey-700">
-			<Player :currentSong="currentSong" :conn='conn' />
+		<div class="flex flex-col w-7/12 h-screen bg-grey-700">
+			<Player :currentSong="currentSong" :conn='conn' :user='me' />
 
 			<Chat :conn='conn' />
 		</div>
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
+    import { ref } from 'vue';
 
 	import getApi from '../ts/helpers/getApi';
 
@@ -32,7 +32,6 @@
 	const currentSong = ref<CurrentSong|undefined>();
 	const users = ref<User[]>();
 	const me = ref<PrivateUserData|undefined>();
-
 
 	const conn = new RoomConnection(1, queue, currentSong, users, me);
 

@@ -30,7 +30,7 @@
 import { onMounted, Ref, ref, watch } from 'vue';
     import { PropType } from '@vue/runtime-core';
 
-	import { CurrentSong, Song } from '../../ts/Modals';
+	import { CurrentSong, PrivateUserData, Song } from '../../ts/Modals';
 
     import Button from '../parts/Button.vue';
 	import getApi from '../../ts/helpers/getApi';
@@ -51,6 +51,7 @@ import { onMounted, Ref, ref, watch } from 'vue';
     const props = defineProps({
         'currentSong': Object as PropType<CurrentSong>,
 		'conn': Object as PropType<RoomConnection>,
+        'user': Object as PropType<PrivateUserData>,
     });
 
 	watch(() => props.currentSong, (newValue: CurrentSong|undefined, oldValue: CurrentSong|undefined) => {
@@ -164,12 +165,15 @@ import { onMounted, Ref, ref, watch } from 'vue';
 		waveSurfer.on('ready', (args: any) => {
 			console.log('ready', args, waveSurfer.isPlaying(), waveSurfer.isReady);
 		})
-		waveSurfer.on('seek', (args: any) => {
-			setTimeout(() => {
-				props.conn?.skipToTimestamp(waveSurfer.getCurrentTime());
-			});
-
-			console.log('seek', args);
+        
+		waveSurfer.on('seek', (args: any) => {            
+            if(props.user?.admin) {
+                setTimeout(() => {
+                    props.conn?.skipToTimestamp(waveSurfer.getCurrentTime());
+                });
+            } else {
+                playHandler();
+            }
 		})
 
 		waveSurfer.on('scroll', (args: any) => {
