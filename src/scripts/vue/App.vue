@@ -1,7 +1,7 @@
 <template>
 	<div class="flex text-white">
 		<div class="w-3/12 h-screen bg-grey-800">
-			<Playlist :roomName="'wat'" :playlist="queue" @add-song="downloadSong" />
+			<Playlist :roomName="'wat'" :playlist="queue" @add-song="downloadSong" :user='me' />
 		</div>
 		
 		<div class="flex flex-col w-7/12 h-screen bg-grey-700">
@@ -38,5 +38,4 @@
 	function downloadSong(song: string) {
 		conn.downloadSong(song);
 	}
-
 </script>

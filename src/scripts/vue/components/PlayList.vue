@@ -7,14 +7,15 @@
                 <span class="absolute w-full h-px -bottom-3 bg-grey-700"></span>
             </div>
         </div>
-        <AddSong @song="emit('add-song', $event)" />
+        
+        <AddSong @song="emit('add-song', $event)" v-if="user?.admin"/>
     </div>
 </template>
 
 <script setup lang="ts">
     import SongItem from '../parts/Song.vue';
     import AddSong from '../components/AddSong.vue';
-    import { Song } from '../../ts/Modals';
+    import { PrivateUserData, Song } from '../../ts/Modals';
     import { PropType } from 'vue';
 
 	const emit = defineEmits(['add-song'])
@@ -22,5 +23,6 @@
     const props = defineProps({
         'roomName': String,
         'playlist': Array as PropType<Array<Song>>, 
+        'user': Object as PropType<PrivateUserData>
     });
 </script>
