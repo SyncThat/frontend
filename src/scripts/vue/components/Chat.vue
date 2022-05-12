@@ -1,8 +1,7 @@
 <template>
     <div class="bg-grey-700 p-8 overflow-auto">
-        <div class="h-80">
-            <h2 class="text-3xl font-bold">Chat</h2>
-        </div>
+		<h2 class="mb-4 text-3xl font-bold">Chat</h2>
+
 		<p v-for="message of messages" :class="{ 'text-red-50': message.type === 'error' }">
 			{{ message.message }}
 		</p>
