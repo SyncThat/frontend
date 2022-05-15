@@ -12,7 +12,7 @@ export class Config {
 		}
 
 		if (protocol) {
-			host = protocol + (this.isBackendSecure() ? 's' : '') + host;
+			host = protocol + (this.isBackendSecure() ? 's' : '') + '://' + host;
 		}
 
 		return host;
