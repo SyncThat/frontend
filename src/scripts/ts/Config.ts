@@ -19,7 +19,10 @@ export class Config {
 	}
 
 	public static isBackendSecure(): boolean {
-		switch(import.meta.env.VITE_BACKEND_SSL) {
+		const isSsl = import.meta.env.VITE_BACKEND_SSL;
+		console.log('isSSL', isSsl);
+
+		switch(isSsl) {
 			case "yes":
 			case "1":
 			case "true":
