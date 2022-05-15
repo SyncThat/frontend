@@ -37,6 +37,7 @@ import { onMounted, Ref, ref, watch } from 'vue';
 
 	import WaveSurfer from 'wavesurfer.js';
 	import { RoomConnection } from '../../ts/RoomConnection';
+import { Config } from '../../ts/Config';
 
     const waveElement: Ref<HTMLElement|undefined> = ref(undefined);
     const audioElement = ref(null)
@@ -73,12 +74,12 @@ import { onMounted, Ref, ref, watch } from 'vue';
 		// Check if a new song should be loaded
 		if (!previous || previous.song.key !== current.song.key) {
 			waveSurfer.stop();
-			waveSurfer.load(`http://localhost:3555/songs/stream/${current.song.key}.mp3`, [], 'auto', current.song.durationInSeconds);
+			waveSurfer.load(`${Config.getBackendHost('http')}/songs/stream/${current.song.key}.mp3`, [], 'auto', current.song.durationInSeconds);
 		}
 		// Check if a new Waveform is available that we've currently not loaded in yet.
 		if (current.song.waveformGenerated && currentLoadedWaveform !== current.song.key) {
 			currentLoadedWaveform = current.song.key;
-			getApi({ Accept: 'application/json' }, `http://localhost:3555/songs/stream/${current.song.key}.json`).then(peaks => {
+			getApi({ Accept: 'application/json' }, `${Config.getBackendHost('http')}/songs/stream/${current.song.key}.json`).then(peaks => {
 				waveSurfer.backend.setPeaks(peaks.data, current.song.durationInSeconds);
 				waveSurfer.drawBuffer();
 			});

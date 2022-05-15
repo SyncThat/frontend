@@ -1,6 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 import { CurrentSong, Join, Notice, PrivateUserData, Song, User } from './Modals';
 import { Ref, ref, UnwrapRef } from 'vue';
+import { Config } from './Config';
 
 export class RoomConnection {
 
@@ -16,9 +17,10 @@ export class RoomConnection {
 		this.users = users;
 		this.me = me;
 
-		this.conn = io('localhost:3555',{
+		this.conn = io(Config.getBackendHost(),{
 			path: '/rooms/ws',
 			transports: [ "websocket" ],
+			secure: Config.isBackendSecure(),
 		})
 
 		this.conn.on('connect', () => {
