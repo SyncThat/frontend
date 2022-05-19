@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center gap-4 p-8 bg-grey-900">
+    <div class="flex items-center gap-4 px-8">
         <div class="flex flex-col justify-between w-3/4 my-6">
             <div class="flex items-center gap-4 mb-8">
                 <div>
@@ -30,14 +30,14 @@
 import { onMounted, Ref, ref, watch } from 'vue';
     import { PropType } from '@vue/runtime-core';
 
-	import { CurrentSong, PrivateUserData, Song } from '../../ts/Modals';
+	import { CurrentSong, PrivateUserData, Song } from '../../ts/models/Room';
 
     import Button from '../parts/Button.vue';
 	import getApi from '../../ts/helpers/getApi';
 
 	import WaveSurfer from 'wavesurfer.js';
 	import { RoomConnection } from '../../ts/RoomConnection';
-import { Config } from '../../ts/Config';
+	import { Config } from '../../ts/Config';
 
     const waveElement: Ref<HTMLElement|undefined> = ref(undefined);
     const audioElement = ref(null)

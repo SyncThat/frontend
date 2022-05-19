@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
-import { CurrentSong, Join, Notice, PrivateUserData, Song, User } from './Modals';
+import { CurrentSong, Join, Notice, PrivateUserData, Song, User } from './models/Room';
+import { LogMessage } from './models/Chat';
 import { Ref, ref, UnwrapRef } from 'vue';
 import { Config } from './Config';
 
@@ -10,12 +11,16 @@ export class RoomConnection {
 	private currentSong: Ref<CurrentSong|undefined>;
 	private users: Ref<User[]|undefined>;
 	private me: Ref<PrivateUserData|undefined>;
+	private logMessages: Ref<LogMessage[]|undefined>;
+	private privateMessages: Ref<LogMessage[]>;
 
-	constructor(room: number, queue: Ref<UnwrapRef<Song[]|undefined>>, currentSong: Ref<UnwrapRef<CurrentSong | undefined>>, users: Ref<User[]|undefined>, me: Ref<PrivateUserData | undefined>) {
+	constructor(room: number, queue: Ref<UnwrapRef<Song[]|undefined>>, currentSong: Ref<UnwrapRef<CurrentSong | undefined>>, users: Ref<User[]|undefined>, me: Ref<PrivateUserData | undefined>, logMessages: Ref<LogMessage[] | undefined>, privateMessages: Ref<LogMessage[]>) {
 		this.queue = queue;
 		this.currentSong = currentSong;
 		this.users = users;
 		this.me = me;
+		this.logMessages = logMessages;
+		this.privateMessages = privateMessages;
 
 		this.conn = io(Config.getBackendHost(),{
 			path: '/rooms/ws',
@@ -58,8 +63,14 @@ export class RoomConnection {
 			this.queue.value = queue;
 		})
 
-		this.conn.on('notice', (notice:Notice) => {
-			console.log(notice);
+		this.conn.on('log', (messages:LogMessage[]) => {
+			console.log(messages);
+			this.logMessages.value = messages;
+		})
+
+		this.conn.on('private-message', (message:LogMessage) => {
+			console.log(messages);
+			this.logMessages.value = messages;
 		})
 
 		console.log(this.conn);
@@ -103,6 +114,12 @@ export class RoomConnection {
 	getUser(): StoredUser|undefined {
 		let item = window.localStorage.getItem('existingUser');
 		return item ? JSON.parse(item) : undefined;
+	}
+
+	sendChatMessage(message: string): void {
+		this.conn.emit('send-chat-message', {
+			message,
+		});	
 	}
 }
 

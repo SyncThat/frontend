@@ -36,7 +36,7 @@
     
     import Button from '../parts/Button.vue';
     import UserItem from '../parts/User.vue';
-	import { PrivateUserData, User } from '../../ts/Modals';
+	import { PrivateUserData, User } from '../../ts/models/Room';
 	import { computed, ref } from 'vue';
 	import { RoomConnection } from '../../ts/RoomConnection';
 

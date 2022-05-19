@@ -1,34 +1,61 @@
 <template>
-    <div class="bg-grey-700 p-8 overflow-auto">
-		<h2 class="mb-4 text-3xl font-bold">Chat</h2>
+	<div class="p-6 grow">
+		<div class="bg-blue-900 py-4 px-8 overflow-auto h-full rounded-t-xl">
+			<template v-for="message of messages" :key="message.id">
+				<ChatMessage :message="message" v-if="isChat(message?.type)"></ChatMessage>
+				<ChatNotification :message="message" v-else-if="isNotification(message?.type)"></ChatNotification>
+			</template>
 
-		<p v-for="message of messages" :class="{ 'text-red-50': message.type === 'error' }">
-			{{ message.message }}
-		</p>
-    </div>
+			<form class="sticky bottom-0 left-0" @submit="sendMessage">
+				<textarea name="" id="" rows="10" required v-model="chatMessage"></textarea>
+
+				<Button type="submit">Send</Button>
+			</form>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
 
 	import { PropType } from '@vue/runtime-core';
 	import { RoomConnection } from '../../ts/RoomConnection';
-	import { onMounted, ref } from 'vue';
-	import { Notice } from '../../ts/Modals';
+	import { onMounted, ref, defineEmits } from 'vue';
+	import { Notice } from '../../ts/models/Room';
+	import { LogMessage, LogMessageType } from '../../ts/models/Chat';
+	import ChatMessage from '../parts/chat/Message.vue';
+	import ChatNotification from '../parts/chat/Notification.vue';
+	import Button from '../parts/Button.vue';
+
+
+	const emit = defineEmits(['send-chat-message']);
 
 	const props = defineProps({
-		'conn': Object as PropType<RoomConnection>,
-	})
+		'messages': Array as PropType<LogMessage[]>
+	});
+	
+	const chatMessage = ref<string>('');
 
-	// Data
-	// TODO: Specify multiple types
-	const messages = ref<Notice[]>([]);
+	function isChat(type:LogMessageType) {
+		return type === LogMessageType.ChatMessage;
+	}
+
+	function isNotification(type:LogMessageType) {
+		return type === LogMessageType.Notification;
+	}
+
+	function sendMessage() {
+		if(chatMessage.value.length > 0) {
+			emit('send-chat-message', chatMessage.value);
+
+			chatMessage.value = '';
+		}
+	}
 
 	onMounted(() => {
-		props.conn?.addNoticeCallback(notice => {
-			console.log('Notice', notice);
-			messages.value.push(notice);
-		});
+		// props.conn?.addNoticeCallback(notice => {
+		// 	console.log('Notice', notice);
+		// 	messages.value.push(notice);
+		// });
 	});
-
 
 </script>
