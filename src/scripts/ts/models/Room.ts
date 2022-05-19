@@ -14,6 +14,7 @@ export interface User {
     name: string,
     connected: boolean,
     admin: boolean,
+    emoji?: string
 }
 
 export interface Song {
@@ -22,9 +23,27 @@ export interface Song {
     downloadProgress: number;
     ready: boolean;
     durationInSeconds: number;
+    waveformGenerated?: boolean;
+    songInfo?: YoutubeDlJsonDump;
+    likedDisliked: { [key: string]: boolean };
+
     /** Public ID of the user who requested it */
     requestedBy?: string;
-    waveformGenerated?: boolean;
+    requestedAt?: number;
+    playedAt?: number;
+    stoppedAt?: number;
+}
+
+export interface YoutubeDlJsonDump {
+    id: string,
+    extractor: string,
+    duration_string: string,
+    title: string,
+    description?: string,
+    webpage_url?: string,
+    uploader?: string,
+    uploader_url?: string,
+    thumbnail?: string,
 }
   
 export interface CurrentSong {
@@ -38,6 +57,7 @@ export interface CurrentSong {
 }
 
 export interface Notice {
+    author: string;
     message: string;
     type?: string;
 }
