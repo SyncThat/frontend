@@ -8,14 +8,25 @@ export class RoomConnection {
 
 	private conn: Socket;
 	private queue: Ref<Song[]|undefined>;
+	private playedSongs: Ref<Song[]|undefined>;
 	private currentSong: Ref<CurrentSong|undefined>;
 	private users: Ref<User[]|undefined>;
 	private me: Ref<PrivateUserData|undefined>;
 	private logMessages: Ref<LogMessage[]|undefined>;
 	private privateMessages: Ref<LogMessage[]>;
 
-	constructor(room: number, queue: Ref<UnwrapRef<Song[]|undefined>>, currentSong: Ref<UnwrapRef<CurrentSong | undefined>>, users: Ref<User[]|undefined>, me: Ref<PrivateUserData | undefined>, logMessages: Ref<LogMessage[] | undefined>, privateMessages: Ref<LogMessage[]>) {
+	constructor(
+		room: number, 
+		queue: Ref<UnwrapRef<Song[]|undefined>>,
+		playedSongs: Ref<UnwrapRef<Song[]|undefined>>,
+		currentSong: Ref<UnwrapRef<CurrentSong | undefined>>, 
+		users: Ref<User[]|undefined>, 
+		me: Ref<PrivateUserData | undefined>, 
+		logMessages: Ref<LogMessage[] | undefined>, 
+		privateMessages: Ref<LogMessage[]> 
+	) {
 		this.queue = queue;
+		this.playedSongs = playedSongs;
 		this.currentSong = currentSong;
 		this.users = users;
 		this.me = me;
@@ -63,6 +74,11 @@ export class RoomConnection {
 			this.queue.value = queue;
 		})
 
+		this.conn.on('played-songs', (playedSongs:Song[]) => {
+			console.log('The played songs:', queue);
+			this.playedSongs.value = playedSongs;
+		})
+
 		this.conn.on('log', (messages:LogMessage[]) => {
 			console.log(messages);
 			this.logMessages.value = messages;
@@ -91,6 +107,13 @@ export class RoomConnection {
 			atTimestamp,
 		})
 	}
+
+	voteOnCurrentSong(vote: boolean|undefined) {
+		this.conn.emit('vote-on-current-song', {
+			vote
+		})
+	}
+
 
 	becomeAdmin(password: string): void {
 		console.log('Become admin', password);

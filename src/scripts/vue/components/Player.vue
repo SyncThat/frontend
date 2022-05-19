@@ -8,8 +8,9 @@
                 </div>
 
                 <div v-if="currentSong">
-                    <span class="block">{{  currentSong.song.title }}</span>
-                    <span class="block text-grey-500 text-sm">-</span>
+					<span class="block">DJ: <span v-html="currentRequestedBy"></span></span>
+                    <span class="block">{{ currentSong.song.title }}</span>
+                    <span class="block text-grey-500 text-sm">{{ currentSong.song.songInfo?.uploader }}</span>
                 </div>
 				<div v-if='!currentSong'>
 					<span class="block">Nothing playing right now</span>
@@ -20,17 +21,17 @@
             <audio ref="audioElement" style="display: none" preload="false"></audio>
         </div>
 
-        <figure class="w-1/4">
-            <img src="/placeholders/cover.jpg" alt="" class="w-full">
+        <figure class="w-1/4" v-if="currentSong?.song.songInfo?.thumbnail">
+            <img :src="currentSong?.song.songInfo?.thumbnail" alt="" class="w-full">
         </figure>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, Ref, ref, watch } from 'vue';
+	import { onMounted, Ref, ref, watch, computed } from 'vue';
     import { PropType } from '@vue/runtime-core';
 
-	import { CurrentSong, PrivateUserData, Song } from '../../ts/models/Room';
+	import { CurrentSong, PrivateUserData, Song, User } from '../../ts/models/Room';
 
     import Button from '../parts/Button.vue';
 	import getApi from '../../ts/helpers/getApi';
@@ -53,9 +54,19 @@ import { onMounted, Ref, ref, watch } from 'vue';
         'currentSong': Object as PropType<CurrentSong>,
 		'conn': Object as PropType<RoomConnection>,
         'user': Object as PropType<PrivateUserData>,
+		'users': Object as PropType<User[]>,
     });
 
+	const currentRequestedBy = computed((publicId: string) => {
+		const requestedBy = props.currentSong?.song.requestedBy;
+		const user:User|undefined = props.users?.find(user => user.id === requestedBy);
+		
+		return user ? user.name : 'Unknown';
+	});
+
 	watch(() => props.currentSong, (newValue: CurrentSong|undefined, oldValue: CurrentSong|undefined) => {
+		console.log('current song changed');
+		
 		handlePlayingSong(newValue, oldValue)
 	});
 
@@ -109,7 +120,6 @@ import { onMounted, Ref, ref, watch } from 'vue';
 			}
 		}
 	}
-
 
     function playHandler() {
         isPlaying.value = true;
@@ -183,7 +193,5 @@ import { onMounted, Ref, ref, watch } from 'vue';
 		waveSurfer.on('waveform-ready', (args: any) => {
 			console.log('waveform-ready', args);
 		})
-
-
     });
 </script>
