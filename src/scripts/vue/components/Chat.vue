@@ -6,8 +6,8 @@
 				<ChatNotification :message="message" v-else-if="isNotification(message?.type)"></ChatNotification>
 			</template>
 
-			<form class="sticky bottom-0 left-0" @submit="sendMessage">
-				<textarea name="" id="" rows="10" required v-model="chatMessage"></textarea>
+			<form class="sticky bottom-0 left-0" @submit.prevent="sendMessage">
+				<textarea class="text-black" name="" id="" rows="10" required v-model="chatMessage"></textarea>
 
 				<Button type="submit">Send</Button>
 			</form>
