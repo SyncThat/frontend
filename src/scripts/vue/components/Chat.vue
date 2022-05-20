@@ -1,13 +1,13 @@
 <template>
 	<div class="p-6 grow">
-		<div class="bg-blue-900 py-4 px-8 overflow-auto h-full rounded-t-xl">
+		<div class="bg-blue-900 py-4 px-8 overflow-auto h-full rounded-t-xl max-h-[50vh]">
 			<template v-for="message of messages" :key="message.id">
 				<ChatMessage :message="getAsChatMessage(message)" v-if="isChat(message?.type)"></ChatMessage>
 				<ChatNotification :message="getAsNotification(message)" v-else-if="isNotification(message?.type)"></ChatNotification>
 			</template>
 
-			<form class="sticky bottom-0 left-0" @submit.prevent="sendMessage">
-				<textarea class="text-black" name="" id="" rows="10" required v-model="chatMessage"></textarea>
+			<form class="sticky bottom-0 left-0 flex" @submit.prevent="sendMessage">
+				<textarea class="text-black flex-grow" name="" id="" rows="2" required v-model="chatMessage"></textarea>
 
 				<Button type="submit">Send</Button>
 			</form>
