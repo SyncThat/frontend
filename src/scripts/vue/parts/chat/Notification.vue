@@ -1,14 +1,14 @@
 <template>
     <div>
-        <div class="flex items-center my-5 p-2 bg-gradient-to-r from-cyan-700 to-cyan-900 rounded">
-            <span class="flex justify-center items-center w-8 h-8 mr-2 rounded-full bg-white/10" v-if="message?.emoji">
+        <div class="flex items-center relative my-5 p-2 bg-gradient-to-r from-cyan-700 to-cyan-900 rounded">
+            <span class="flex justify-center items-center shrink-0 w-8 h-8 mr-2 rounded-full bg-white/10" v-if="message?.emoji">
                 <span class="text-1xl">{{message?.emoji}}</span>
             </span>
 
-            <div class="text-white">
-                <p v-html="message?.message"></p>
+            <div class="w-full">
+                <p class="text-white" v-html="message?.message"></p>
 
-                <span>{{message?.timestamp}}</span>
+                <span class="absolute right-2 bottom-1 text-white/75 text-xs">{{formattedDate}}</span>
             </div>
         </div>
     </div>
@@ -16,7 +16,18 @@
 
 <script setup lang="ts">
 	import { PropType } from '@vue/runtime-core';
+    import { computed } from 'vue';
 	import { LogNotification } from '../../../ts/models/Chat';
+
+    const formattedDate = computed(() => {
+        if(props.message) {
+            const date = new Date(props.message.timestamp);
+            return `${date.getHours()}:${date.getMinutes()}`;
+        } else {
+            return false;
+        }
+        
+    });
 
 	const props = defineProps({
 		'message': Object as PropType<LogNotification>,
