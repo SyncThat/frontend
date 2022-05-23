@@ -6,10 +6,10 @@
 		</div>
 		
 		<div class="flex flex-col grow h-screen overflow-hidden">
-			<div class="flex flex-wrap h-full">
-				<div class="flex flex-col w-9/12">
-					<Header :roomName="'🍺 Lekker lekker lekker'" :user='me'></Header>
-					
+			<Header :roomName="'🍺 Lekker lekker lekker'" :user='me'></Header>
+			
+			<div class="flex flex-wrap h-full">	
+				<div class="flex flex-col w-9/12">					
 					<Player :currentSong="currentSong" :conn='conn' :user='me' :users="users" />
 
 					<Chat :messages='messages' @send-chat-message="sendChatMessage" />
