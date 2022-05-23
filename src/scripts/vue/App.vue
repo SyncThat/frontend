@@ -16,11 +16,7 @@
 				</div>
 
 				<div class="flex flex-col h-full w-3/12 bg-blue-500">
-					<div class="flex p-4">
-						<button class="mr-4" @click="voteOnCurrentSong(true)">Yay</button>
-						<button @click="
-						voteOnCurrentSong(false)">Nay</button>
-					</div>
+					<Vote @vote-on-current-song="voteOnCurrentSong" />
 
 					<Users :users="users" :conn='conn' :user='me' />
 				</div>
@@ -41,6 +37,7 @@
 	import Header from './components/Header.vue';
 	import Player from '../vue/components/Player.vue';
 	import Chat from '../vue/components/Chat.vue';
+	import Vote from '../vue/components/Vote.vue';
 	import Users from '../vue/components/Users.vue';
 	import { RoomConnection } from '../ts/RoomConnection';
 	import { CurrentSong, PrivateUserData, Song, User} from '../ts/models/Room';
@@ -73,6 +70,7 @@
 	}
 
 	function voteOnCurrentSong(vote: boolean|undefined) {
+		console.log(vote);
 		conn.voteOnCurrentSong(vote);
 	}
 </script>
