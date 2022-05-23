@@ -15,18 +15,18 @@
 </template>
 
 <script setup lang="ts">
-	import { PropType } from '@vue/runtime-core';
     import { computed } from 'vue';
+	import { PropType } from '@vue/runtime-core';
+    
 	import { LogNotification } from '../../../ts/models/Chat';
+    import formatDate from '../../../ts/helpers/functions';
 
     const formattedDate = computed(() => {
-        if(props.message) {
-            const date = new Date(props.message.timestamp);
-            return `${date.getHours()}:${date.getMinutes()}`;
+        if(props.message){
+            return formatDate(props.message?.timestamp);
         } else {
             return false;
         }
-        
     });
 
 	const props = defineProps({
