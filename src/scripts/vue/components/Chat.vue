@@ -1,20 +1,22 @@
 <template>
-	<div class="relative flex-1 p-6">
-		<div class="flex flex-col absolute top-0 left-0 w-full h-full bg-blue-900 rounded-t-xl">
-			<div class="px-8 py-6 overflow-auto">
-				<template v-for="message of messages" :key="message.id">
-					<ChatMessage :message="getAsChatMessage(message)" v-if="isChat(message?.type)"></ChatMessage>
-					<ChatNotification :message="getAsNotification(message)" v-else-if="isNotification(message?.type)"></ChatNotification>
-				</template>
-			</div>
-
-			<div class="flex items-center relative mt-auto px-8 py-2 border-t border-white/25 text-sm">
-				<div class="w-full">
-					<span class="block max-h-20 overflow-x-hidden overflow-y-auto resize-none leading-tight whitespace-pre-wras focus:outline-none before:content-['Start_talking_bruh...'] before:opacity-50" :class="[showPlaceholder ? 'before:block' : 'before:hidden']" ref="chatMessageBox" role="textbox" contenteditable @focus="showPlaceholder = false" @blur="handleBlur()"></span>
+	<div class="flex-1 p-6">
+		<div class="relative w-full h-full">
+			<div class="flex flex-col absolute top-0 left-0 w-full h-full bg-blue-900 rounded-t-xl">
+				<div class="h-full px-8 py-6 overflow-auto">
+					<template v-for="message of messages" :key="message.id">
+						<ChatMessage :message="getAsChatMessage(message)" v-if="isChat(message?.type)"></ChatMessage>
+						<ChatNotification :message="getAsNotification(message)" v-else-if="isNotification(message?.type)"></ChatNotification>
+					</template>
 				</div>
 
-				<div>
-					<Button class="shrink-0" @click.prevent="sendMessage">Send</Button>
+				<div class="flex items-center relative mt-auto px-8 py-2 border-t border-white/25 text-sm">
+					<div class="w-full">
+						<span class="block max-h-20 overflow-x-hidden overflow-y-auto resize-none leading-tight whitespace-pre-wras focus:outline-none before:content-['Start_talking_bruh…'] before:opacity-50" :class="[showPlaceholder ? 'before:block' : 'before:hidden']" ref="chatMessageBox" role="textbox" contenteditable @focus="showPlaceholder = false" @blur="handleBlur()"></span>
+					</div>
+
+					<div>
+						<Button class="shrink-0" @click.prevent="sendMessage">Send</Button>
+					</div>
 				</div>
 			</div>
 		</div>
