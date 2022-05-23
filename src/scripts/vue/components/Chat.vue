@@ -26,7 +26,7 @@
 <script setup lang="ts">
 
 	import { PropType } from '@vue/runtime-core';
-	import { ref, defineEmits } from 'vue';
+	import { ref } from 'vue';
 	import { LogMessage, LogMessageType, LogChatMessage, LogNotification } from '../../ts/models/Chat';
 	import ChatMessage from '../parts/chat/Message.vue';
 	import ChatNotification from '../parts/chat/Notification.vue';
