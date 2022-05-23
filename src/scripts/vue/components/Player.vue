@@ -1,12 +1,12 @@
 <template>
     <div class="flex items-center gap-4 px-8">
         <div class="flex flex-col justify-between w-3/4 my-6">
+			<div class="my-4">
+				<Button @click="pauseHandler()" v-if="isPlaying">Stop listening</Button>
+				<Button @click="playHandler()" v-else>Start listening</Button>
+			</div>
+			
             <div class="flex items-center gap-4 mb-8">
-                <div>
-                    <Button @click="pauseHandler()" v-if="isPlaying">Pause</Button>
-                    <Button @click="playHandler()" v-else>Play</Button>
-                </div>
-
                 <div v-if="currentSong">
 					<span class="block">DJ: <span v-html="currentRequestedBy"></span></span>
                     <span class="block">{{ currentSong.song.title }}</span>
@@ -19,7 +19,6 @@
             </div>
 
             <div class="mb-6" id="wave" ref="waveElement"></div>
-            <audio ref="audioElement" style="display: none" preload="false"></audio>
         </div>
 
         <figure class="w-1/4" v-if="currentSong?.song.songInfo?.thumbnail">
@@ -42,7 +41,6 @@
 	import { Config } from '../../ts/Config';
 
     const waveElement: Ref<HTMLElement|undefined> = ref(undefined);
-    const audioElement = ref(null)
     const isPlaying = ref(false);
 
 	// The wavesurfer instance.

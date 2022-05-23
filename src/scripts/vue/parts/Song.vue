@@ -1,13 +1,30 @@
 <template>
     <div class="flex items-center" v-if='song'>
-        <figure class="relative mr-3">
-            <img src="/placeholders/cover.jpg" alt="" class="w-14 h-14">
+        <figure class="relative shrink-0 mr-3" v-if="song.songInfo?.thumbnail">
+            <img class="w-14 h-14 rounded-xl overflow-hidden" :src="song.songInfo?.thumbnail" alt="">
         </figure>
-        <div>
-            <span class="block text-grey-500 text-sm">{{song.title}}</span>
-            <span class="block">{{song.songInfo?.uploader}}</span>
 
-            <a :href="song.songInfo?.webpage_url" target="_blank">Link</a>
+        <div class="flex-1 min-w-0">
+            <span class="block text-sm text-ellipsis whitespace-nowrap overflow-hidden">{{song.title}}</span>
+            <span class="block text-xs text-grey-500">{{song.songInfo?.uploader}}</span>
+        </div>
+
+        <div class="flex flex-col items-end">
+            <div class="flex shrink-0 gap-2 pl-4">
+                <a :href="song.songInfo?.webpage_url" target="_blank">
+                    <img src="/images/link.svg" alt="" class="w-3">
+                </a>
+
+                <button>
+                    <img src="/images/play.svg" alt="" class="w-3">
+                </button>
+
+                <button>
+                    <img src="/images/remove.svg" alt="" class="w-3">
+                </button>
+            </div>
+            
+            <span class="block mt-2 text-xs text-grey-500">{{song.songInfo?.duration_string}}</span>
         </div>
     </div>
 </template>

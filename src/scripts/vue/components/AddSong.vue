@@ -1,10 +1,9 @@
 <template>
-    <div class="flex flex-col p-8 bg-grey-900 gap-4">
-        <div class="relative bg-inherit w-full">
-            <input type="text" id="username" name="username" placeholder="Song URL" v-model="songURL" class="peer bg-transparent h-10 w-full rounded-lg text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-cyan-600 focus:outline-none focus:border-rose-600"/>
-            <label for="username" class="absolute cursor-text left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-cyan-600 peer-focus:text-sm transition-all">Song URL</label>
+    <div class="flex flex-col gap-4 relative p-8 z-10 before:content[''] before:absolute before:bottom-0 before:left-0 before:h-[150%] before:w-full before:-z-10 before:bg-gradient-to-t before:from-cyan-900 before:to-cyan-900/0">
+        <div class="flex gap-4 relative w-full rounded-lg text-gray-200 ring-1 p-2 ring-gray-400">
+            <input type="text" id="song-url" name="song-url" placeholder="Paste your song URL..." v-model="songURL" class="pl-4 bg-transparent focus:outline-none"/>
+            <Button @click="addSong">Sync</Button>
         </div>
-        <Button @click="addSong">Sync that!</Button>
     </div>    
 </template>
 
@@ -15,7 +14,7 @@
 
     import Button from '../parts/Button.vue';
 
-    const songURL = ref('');
+    const songURL = ref<String>('');
        
     const headers = {
         Accept: 'application/json'

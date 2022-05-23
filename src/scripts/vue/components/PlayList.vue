@@ -1,9 +1,8 @@
 <template>
     <div class="flex flex-col grow justify-between bg-blue-700">
-        <div class="h-full px-8 pt-4 overflow-auto">
-            <div class="mb-6 relative" v-for="(song, index) in playlist" :key="index">
+        <div class="flex flex-col h-full px-6 pt-4 gap-y-2 overflow-auto">
+            <div class="relative" v-for="(song, index) in playlist" :key="index">
                 <SongItem :song="song" />
-                <span class="absolute w-full h-px -bottom-3"></span>
             </div>
         </div>
         
