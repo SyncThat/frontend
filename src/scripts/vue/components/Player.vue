@@ -1,29 +1,55 @@
 <template>
-    <div class="flex items-center gap-4 px-8">
-        <div class="flex flex-col justify-between w-3/4 my-6">
-			<div class="my-4">
+    <div class="p-12">
+        <div class="flex flex-col">
+			<div class="mb-4">
 				<Button @click="pauseHandler()" v-if="isPlaying">Stop listening</Button>
 				<Button @click="playHandler()" v-else>Start listening</Button>
-			</div>
-			
-            <div class="flex items-center gap-4 mb-8">
-                <div v-if="currentSong">
-					<span class="block">DJ: <span v-html="currentRequestedBy"></span></span>
-                    <span class="block">{{ currentSong.song.title }}</span>
-                    <span class="block text-grey-500 text-sm">{{ currentSong.song.songInfo?.uploader }}</span>
-                </div>
-				
+								
 				<div v-if='!currentSong'>
 					<span class="block">Nothing playing right now</span>
 				</div>
-            </div>
+			</div>
+			
+            <div class="flex flex-wrap items-center gap-8 mb-1">
+				<figure v-if="currentSong?.song.songInfo?.thumbnail">
+					<img :src="currentSong?.song.songInfo?.thumbnail" alt="" class="h-28 w-28 rounded-lg">
+				</figure>
 
-            <div class="mb-6" id="wave" ref="waveElement"></div>
+                <div class="flex-1 min-w-0" v-if="currentSong">
+					<div class="flex gap-2 mb-2">
+						<span class="flex">
+							<img src="/images/music.svg" alt="" class="w-4">	
+						</span>
+
+						<div class="text-xs font-medium">
+							DJ: <span v-html="currentRequestedBy"></span>
+						</div>
+					</div>
+
+                    <p class="mb-2 text-3xl font-medium text-ellipsis whitespace-nowrap overflow-hidden">{{ currentSong.song.title }}</p>
+
+                    <span class="block text-white/75 text-xl">{{ currentSong.song.songInfo?.uploader }}</span>
+                </div>
+            </div>
+			
+			<div class="flex justify-end w-full mb-8">
+				<div class="flex shrink-0 gap-4">
+					<a class="flex items-center gap-2 text-sm" href="#" target="_blank">
+						<img src="/images/link.svg" alt="" class="w-3">
+
+						Song link
+					</a>
+
+					<button class="flex items-center gap-2 text-sm" href="#" target="_blank">
+						<img src="/images/skip.svg" alt="" class="w-3">
+
+						Vote skip
+					</button>
+				</div>
+			</div>
         </div>
 
-        <figure class="w-1/4" v-if="currentSong?.song.songInfo?.thumbnail">
-            <img :src="currentSong?.song.songInfo?.thumbnail" alt="" class="w-full">
-        </figure>
+        <div id="wave" ref="waveElement"></div>
     </div>
 </template>
 

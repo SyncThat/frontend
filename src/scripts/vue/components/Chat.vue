@@ -1,5 +1,5 @@
 <template>
-	<div class="flex-1 p-6">
+	<div class="flex-1 px-6">
 		<div class="relative w-full h-full">
 			<div class="flex flex-col absolute top-0 left-0 w-full h-full bg-blue-900 rounded-t-xl">
 				<div class="h-full px-8 py-6 overflow-auto">

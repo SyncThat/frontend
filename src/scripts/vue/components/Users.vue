@@ -1,13 +1,12 @@
 <template>
     <div class="p-8 flex flex-col flex-grow justify-between">
-        <div>
-			<h2 class="text-2xl font-bold mb-6" v-if='currentPublicUser'>You</h2>
+        <div>			
 			<div v-if='currentPublicUser'>
 				<div class="mb-4 relative">
 					<UserItem :user="currentPublicUser" />
 				</div>
 			</div>
-            <h2 class="text-2xl font-bold mb-6">Users</h2>
+
             <div>
                 <div class="mb-4 relative" v-for="(user, index) in otherUsers" :key="index">
                     <UserItem :user="user" />
