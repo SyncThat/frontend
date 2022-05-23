@@ -1,24 +1,25 @@
 <template>
-	<div class="flex text-white bg-blue-800 overflow-hidden">
+	<div class="flex text-white bg-blue-800">
 		<div class="flex flex-col w-3/12 h-screen">
 			<Logo></Logo>
 			<Playlist :playlist="queue" @add-song="downloadSong" :user='me' />
 		</div>
 		
-		<div class="flex flex-col w-full h-screen">
-			<Header :roomName="'🍺 Lekker lekker lekker'"></Header>
-
+		<div class="flex flex-col w-full h-screen overflow-hidden">
 			<div class="flex flex-wrap h-full">
 				<div class="flex flex-col w-9/12">
+					<Header :roomName="'🍺 Lekker lekker lekker'"></Header>
+					
 					<Player :currentSong="currentSong" :conn='conn' :user='me' :users="users" />
 
 					<Chat :messages='messages' @send-chat-message="sendChatMessage" />
 				</div>
 
-				<div class="w-3/12 bg-blue-500">
+				<div class="flex flex-col h-full w-3/12 bg-blue-500">
 					<div class="flex p-4">
 						<button class="mr-4" @click="voteOnCurrentSong(true)">Yay</button>
-						<button @click="voteOnCurrentSong(false)">Nay</button>
+						<button @click="
+						voteOnCurrentSong(false)">Nay</button>
 					</div>
 
 					<Users :users="users" :conn='conn' :user='me' />

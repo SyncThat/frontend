@@ -12,6 +12,7 @@
                     <span class="block">{{ currentSong.song.title }}</span>
                     <span class="block text-grey-500 text-sm">{{ currentSong.song.songInfo?.uploader }}</span>
                 </div>
+				
 				<div v-if='!currentSong'>
 					<span class="block">Nothing playing right now</span>
 				</div>

@@ -1,16 +1,22 @@
 <template>
-	<div class="p-6 grow">
-		<div class="bg-blue-900 py-4 px-8 overflow-auto h-full rounded-t-xl max-h-[50vh]">
-			<template v-for="message of messages" :key="message.id">
-				<ChatMessage :message="getAsChatMessage(message)" v-if="isChat(message?.type)"></ChatMessage>
-				<ChatNotification :message="getAsNotification(message)" v-else-if="isNotification(message?.type)"></ChatNotification>
-			</template>
+	<div class="relative flex-1 p-6">
+		<div class="flex flex-col absolute top-0 left-0 w-full h-full bg-blue-900 rounded-t-xl">
+			<div class="px-8 py-6 overflow-auto">
+				<template v-for="message of messages" :key="message.id">
+					<ChatMessage :message="getAsChatMessage(message)" v-if="isChat(message?.type)"></ChatMessage>
+					<ChatNotification :message="getAsNotification(message)" v-else-if="isNotification(message?.type)"></ChatNotification>
+				</template>
+			</div>
 
-			<form class="sticky bottom-0 left-0 flex" @submit.prevent="sendMessage">
-				<textarea class="text-black flex-grow" name="" id="" rows="2" required v-model="chatMessage"></textarea>
+			<div class="flex items-center relative mt-auto px-8 py-2 border-t border-white/25 text-sm">
+				<div class="w-full">
+					<span class="block max-h-20 overflow-x-hidden overflow-y-auto resize-none leading-tight whitespace-pre-wras focus:outline-none before:content-['Start_talking_bruh...'] before:opacity-50" :class="[showPlaceholder ? 'before:block' : 'before:hidden']" ref="chatMessageBox" role="textbox" contenteditable @focus="showPlaceholder = false" @blur="handleBlur()"></span>
+				</div>
 
-				<Button type="submit">Send</Button>
-			</form>
+				<div>
+					<Button class="shrink-0" @click.prevent="sendMessage">Send</Button>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -18,15 +24,11 @@
 <script setup lang="ts">
 
 	import { PropType } from '@vue/runtime-core';
-	import { RoomConnection } from '../../ts/RoomConnection';
-	import { onMounted, ref, defineEmits } from 'vue';
-	import { Notice } from '../../ts/models/Room';
-	import { LogChatMessage, LogNotification } from '../../ts/models/Chat';
-	import { LogMessage, LogMessageType } from '../../ts/models/Chat';
+	import { ref, defineEmits } from 'vue';
+	import { LogMessage, LogMessageType, LogChatMessage, LogNotification } from '../../ts/models/Chat';
 	import ChatMessage from '../parts/chat/Message.vue';
 	import ChatNotification from '../parts/chat/Notification.vue';
 	import Button from '../parts/Button.vue';
-
 
 	const emit = defineEmits(['send-chat-message']);
 
@@ -34,7 +36,14 @@
 		'messages': Array as PropType<LogMessage[]>
 	});
 	
-	const chatMessage = ref<string>('');
+	const chatMessageBox = ref<HTMLInputElement>();
+	const showPlaceholder = ref<Boolean>(true);
+
+	function handleBlur() {		
+		const text = chatMessageBox.value?.innerText;
+
+		showPlaceholder.value = text?.length === 0;
+	};
 
 	function isChat(type:LogMessageType) {
 		return type === LogMessageType.ChatMessage;
@@ -43,7 +52,6 @@
 	function getAsChatMessage(message: LogMessage): LogChatMessage {
 		return message as LogChatMessage;
 	}
-
 
 	function isNotification(type:LogMessageType) {
 		return type === LogMessageType.Notification;
@@ -54,18 +62,20 @@
 	}
 
 	function sendMessage() {
-		if(chatMessage.value.length > 0) {
-			emit('send-chat-message', chatMessage.value);
+		if(!chatMessageBox.value) return;
 
-			chatMessage.value = '';
+		let chatMessage = chatMessageBox.value.innerHTML;
+		chatMessage = chatMessage.replace(/<br>/gi, "\n");
+		
+		if(chatMessage) {
+			console.log(chatMessage);
+	
+			if(chatMessage.length > 0) {				
+				emit('send-chat-message', chatMessage);
+	
+				chatMessageBox.value.innerText = '';
+			}
 		}
 	}
-
-	onMounted(() => {
-		// props.conn?.addNoticeCallback(notice => {
-		// 	console.log('Notice', notice);
-		// 	messages.value.push(notice);
-		// });
-	});
 
 </script>

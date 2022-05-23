@@ -1,5 +1,5 @@
 <template>
-    <div class="p-8 flex flex-col justify-between h-full">
+    <div class="p-8 flex flex-col flex-grow justify-between">
         <div>
 			<h2 class="text-2xl font-bold mb-6" v-if='currentPublicUser'>You</h2>
 			<div v-if='currentPublicUser'>
@@ -16,6 +16,7 @@
                 </div>
             </div>
         </div>
+
         <div class="flex flex-col" v-if="!user || !user.admin">
 			<input type="text" placeholder="Password"
 				   class="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-cyan-600 focus:outline-none focus:border-rose-600 mb-4"

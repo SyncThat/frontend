@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col justify-between h-full bg-blue-700">
+    <div class="flex flex-col grow justify-between bg-blue-700">
         <div class="h-full px-8 pt-4 overflow-auto">
             <div class="mb-6 relative" v-for="(song, index) in playlist" :key="index">
                 <SongItem :song="song" />
