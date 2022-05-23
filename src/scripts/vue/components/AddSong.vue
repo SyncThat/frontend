@@ -1,8 +1,13 @@
 <template>
-    <div class="flex flex-col gap-4 relative p-8 z-10 before:content[''] before:absolute before:bottom-0 before:left-0 before:h-[150%] before:w-full before:-z-10 before:bg-gradient-to-t before:from-cyan-900 before:to-cyan-900/0">
-        <div class="flex gap-4 relative w-full rounded-lg text-gray-200 ring-1 p-2 ring-gray-400">
-            <input type="text" id="song-url" name="song-url" placeholder="Paste your song URL..." v-model="songURL" class="pl-4 bg-transparent focus:outline-none"/>
-            <Button @click="addSong">Sync</Button>
+    <div class="flex flex-col gap-4 relative py-8 px-6 z-10 before:content[''] before:absolute before:bottom-0 before:left-0 before:h-[150%] before:w-full before:-z-10 before:bg-gradient-to-t before:from-cyan-900 before:to-cyan-900/0">
+        <div class="flex items-center gap-4 w-full rounded-lg text-gray-200 ring-1 p-2 ring-gray-400">
+            <div>
+                <input type="text" id="song-url" name="song-url" placeholder="Paste your song URL..." v-model="songURL" class="pl-4 appearance-none w-full bg-transparent focus:outline-none"/>
+            </div>
+
+            <div class="shrink-0 ml-auto">
+                <Button class="" @click="addSong">Sync</Button>
+            </div>
         </div>
     </div>    
 </template>
