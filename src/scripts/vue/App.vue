@@ -30,8 +30,6 @@
 <script setup lang="ts">
     import { ref, computed } from 'vue';
 
-	import getApi from '../ts/helpers/getApi';
-
 	import Logo from '../vue/components/Logo.vue';
 	import Playlist from './components/PlayList.vue';
 	import Header from './components/Header.vue';

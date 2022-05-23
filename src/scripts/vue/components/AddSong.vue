@@ -15,8 +15,6 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     
-    import postApi from '../../ts/helpers/postApi';
-
     import Button from '../parts/Button.vue';
 
     const songURL = ref<String>('');
