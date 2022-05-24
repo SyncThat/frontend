@@ -171,7 +171,7 @@
             waveColor: '#B4B7BC',
             normalize: true,
 			responsive: true,
-			mediaControls: true,
+			mediaControls: false,
         }); 
 
 		// Mount events
