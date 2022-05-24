@@ -32,11 +32,10 @@
                 </div>
             </div>
 			
-			<div class="flex justify-end w-full mb-8">
+			<div class="flex justify-end w-full mb-8" v-if="currentSong?.song?.songInfo">
 				<div class="flex shrink-0 gap-4">
-					<a class="flex items-center gap-2 text-sm" href="#" target="_blank">
+					<a class="flex items-center gap-2 text-sm" :href="currentSong.song.songInfo.webpage_url" target="_blank">
 						<img src="/images/link.svg" alt="" class="w-3">
-
 						Song link
 					</a>
 
