@@ -5,7 +5,7 @@
         </span>
         
         <div class="w-full">
-            <p class="text-sm text-white/75 leading-relaxed" v-html="message?.message"></p>
+            <p class="text-sm text-white/75 leading-relaxed">{{ message.message }}</p>
 
             <span class="absolute right-2 bottom-1 text-white/75 text-xs">{{formattedDate}}</span>
         </div>

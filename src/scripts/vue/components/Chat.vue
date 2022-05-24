@@ -11,7 +11,11 @@
 
 				<div class="flex items-center relative mt-auto px-8 py-2 border-t border-white/25 text-sm">
 					<div class="w-full">
-						<span class="block max-h-20 overflow-x-hidden overflow-y-auto resize-none leading-tight whitespace-pre-wras focus:outline-none before:content-['Start_talking_bruh…'] before:opacity-50" :class="[showPlaceholder ? 'before:block' : 'before:hidden']" ref="chatMessageBox" role="textbox" contenteditable @focus="showPlaceholder = false" @blur="handleBlur()"></span>
+						<span
+							class="block max-h-20 overflow-x-hidden overflow-y-auto resize-none leading-tight whitespace-pre-wras focus:outline-none before:content-['Start_talking_bruh…'] before:opacity-50"
+							:class="[showPlaceholder ? 'before:block' : 'before:hidden']" ref='chatMessageBox'
+							@keydown.enter.exact.prevent='sendMessage'
+							role='textbox' contenteditable @focus='showPlaceholder = false' @blur='handleBlur()'></span>
 					</div>
 
 					<div>
@@ -66,8 +70,8 @@
 	function sendMessage() {
 		if(!chatMessageBox.value) return;
 
-		let chatMessage = chatMessageBox.value.innerHTML;
-		chatMessage = chatMessage.replace(/<br>/gi, "\n");
+		let chatMessage = chatMessageBox.value.innerText;
+		// chatMessage = chatMessage.replace(/<br>/gi, "\n");
 		
 		if(chatMessage) {
 			console.log(chatMessage);
