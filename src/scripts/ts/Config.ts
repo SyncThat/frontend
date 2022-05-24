@@ -18,6 +18,20 @@ export class Config {
 		return host;
 	}
 
+	public static getMediaHost(): string {
+		const overwrite = import.meta.env.VITE_MEDIA_HOST;
+		if (overwrite) {
+			if (!/\/$/.test(overwrite)) {
+				return overwrite;
+			} else {
+				return overwrite.replace(/\/$/, '');
+			}
+		}
+
+		// Return default backend host route
+		return this.getBackendHost('http') + '/songs/stream';
+	}
+
 	public static isBackendSecure(): boolean {
 		const isSsl = import.meta.env.VITE_BACKEND_SSL;
 		console.log('isSSL', isSsl);

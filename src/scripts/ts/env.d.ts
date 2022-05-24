@@ -14,6 +14,8 @@ interface ImportMetaEnv {
     readonly VITE_BACKEND_HOST: string
     readonly VITE_BACKEND_PORT?: string;
     readonly VITE_BACKEND_SSL: string;
+
+    readonly VITE_MEDIA_HOST?: string;
 }
 
 interface ImportMeta {
