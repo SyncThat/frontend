@@ -21,7 +21,7 @@
         <div class="flex flex-col h-full px-6 pt-4 gap-y-2 overflow-auto"
 			 :class="{ 'place-content-center place-items-center': !hasItems }">
             <div class="relative" v-for="(song, index) in currentList" :key="index">
-                <SongItem :song="song" />
+                <SongItem :song="song" :show-controls="user.admin && showCurrentQueue" />
             </div>
 			<div class="relative" v-if='!hasItems'>
 				<!-- TODO: Format me! -->

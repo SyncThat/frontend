@@ -17,7 +17,7 @@
 	import { PropType } from '@vue/runtime-core';
 
 	import { LogChatMessage } from '../../../ts/models/Chat';
-    import formatDate from '../../../ts/helpers/functions';
+	import { formatDate } from '../../../ts/helpers/functions';
 
 	const props = defineProps({
 		'message': Object as PropType<LogChatMessage>,

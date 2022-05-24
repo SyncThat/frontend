@@ -15,17 +15,17 @@
                     <img src="/images/link.svg" alt="" class="w-3">
                 </a>
 
-                <button>
+                <button v-if="showControls" @click="$emit('play-now')">
                     <img src="/images/play.svg" alt="" class="w-3">
                 </button>
 
-                <button>
+                <button v-if="showControls" @click="$emit('remove')">
                     <img src="/images/remove.svg" alt="" class="w-3">
                 </button>
             </div>
             
             <span class="block mt-2 text-xs text-grey-500">
-				{{song.ready ? song.songInfo?.duration_string : `${song.downloadProgress.toFixed(1)}%`}}
+				{{song.ready ? durationString : `${song.downloadProgress.toFixed(1)}%`}}
 			</span>
         </div>
     </div>
@@ -34,8 +34,16 @@
 <script setup lang="ts">
     import { PropType } from '@vue/runtime-core';
     import {Song} from '../../ts/models/Room';
+	import { computed } from 'vue';
+	import { formatDurationString } from '../../ts/helpers/functions';
+
+	defineEmits(['play-now', 'remove'])
     
     const props = defineProps({
-        'song': Object as PropType<Song>
+        'song': Object as PropType<Song>,
+		'showControls': Boolean,
     });
+
+	const durationString = computed(() => props.song ? formatDurationString(props.song.durationInSeconds) : '-')
+
 </script>

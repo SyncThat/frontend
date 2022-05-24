@@ -19,7 +19,7 @@
 	import { PropType } from '@vue/runtime-core';
     
 	import { LogNotification } from '../../../ts/models/Chat';
-    import formatDate from '../../../ts/helpers/functions';
+	import { formatDate } from '../../../ts/helpers/functions';
 
     const formattedDate = computed(() => {
         if(props.message){

@@ -49,6 +49,16 @@
         </div>
 
         <div id="wave" ref="waveElement"></div>
+
+		<div class="flex justify-between w-full mb-8 mt-1" v-if="currentSongDuration">
+			<div class="text-xs text-gray-500">
+				{{ currentSongCurrentTimestamp }}
+			</div>
+			<div class="text-xs text-gray-500">
+				{{ currentSongDuration }}
+			</div>
+		</div>
+
     </div>
 </template>
 
@@ -64,9 +74,11 @@
 	import WaveSurfer from 'wavesurfer.js';
 	import { RoomConnection } from '../../ts/RoomConnection';
 	import { Config } from '../../ts/Config';
+	import { formatDurationString } from '../../ts/helpers/functions';
 
     const waveElement: Ref<HTMLElement|undefined> = ref(undefined);
     const isPlaying = ref(false);
+	const currentSongAtSeconds = ref(0);
 
 	// The wavesurfer instance.
 	let waveSurfer: WaveSurfer;
@@ -86,6 +98,20 @@
 		const user:User|undefined = props.users?.find(user => user.id === requestedBy);
 		
 		return user ? user.name : 'Unknown';
+	});
+	const currentSongCurrentTimestamp = computed(() => {
+		if (!props.currentSong || !isPlaying || !props.currentSong?.song?.durationInSeconds) {
+			return '-';
+		} else {
+			return formatDurationString( currentSongAtSeconds.value, props.currentSong.song.durationInSeconds);
+		}
+	});
+	const currentSongDuration = computed(() => {
+		if (!props.currentSong?.song?.durationInSeconds) {
+			return undefined;
+		} else {
+			return formatDurationString( props.currentSong.song.durationInSeconds );
+		}
 	});
 
 	watch(() => props.currentSong, (newValue: CurrentSong|undefined, oldValue: CurrentSong|undefined) => {
@@ -175,8 +201,8 @@
         }); 
 
 		// Mount events
-		waveSurfer.on('audioprocess', (args: any) => {
-			// console.log('audioprocess', args);
+		waveSurfer.on('audioprocess', (args: number) => {
+			currentSongAtSeconds.value = Math.floor(args);
 		})
 
 		waveSurfer.on('error', (args: any) => {
