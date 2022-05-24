@@ -2,7 +2,7 @@
 	<div class="flex text-white bg-blue-800">
 		<div class="flex flex-col shrink-0 w-3/12 h-screen">
 			<Logo></Logo>
-			<Playlist :playlist="queue" @add-song="downloadSong" :user='me' />
+			<Playlist :playlist="queue" :played-songs="playedSongs" @add-song="downloadSong" :user='me' />
 		</div>
 		
 		<div class="flex flex-col grow h-screen overflow-hidden">
