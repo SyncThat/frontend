@@ -121,6 +121,12 @@ export class RoomConnection {
 			password,
 		});
 	}
+
+	changeName(newName: string): void {
+		this.conn.emit('change-name', {
+			name: newName,
+		});
+	}
 	
 	saveUser() {		
 		window.localStorage.setItem('existingUser', JSON.stringify({

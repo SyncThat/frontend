@@ -1,6 +1,6 @@
 <template>
     <div class="p-8 flex flex-col flex-grow justify-between">
-        <div>			
+        <div class="flex-grow">
 			<div v-if='currentPublicUser'>
 				<div class="mb-4 relative">
 					<UserItem :user="currentPublicUser" />
@@ -16,19 +16,32 @@
             </div>
         </div>
 
-        <div class="flex flex-col" v-if="!user || !user.admin">
+		<div class="flex flex-col pt-4" v-if="user">
+			<input type="text" placeholder="Your name"
+				   maxlength="40"
+				   class="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-cyan-600 focus:outline-none focus:border-rose-600 mb-4"
+				   v-model='nameValue'
+				   @keydown.enter.prevent='onChangeName'
+				   v-if='showNameField' />
+
+			<Button @click="onChangeName">
+				{{ showNameField ? 'Change name!' : 'Change name?' }}
+			</Button>
+		</div>
+
+		<!-- TODO: Move this to song queue instead maybe? -->
+        <div class="flex flex-col pt-4" v-if="user && !user.admin">
 			<input type="text" placeholder="Password"
 				   class="peer bg-transparent h-10 w-full rounded-lg text-gray-200 ring-2 px-2 ring-gray-500 focus:ring-cyan-600 focus:outline-none focus:border-rose-600 mb-4"
 				   v-model='passwordValue'
+				   @keydown.enter.prevent='onBecomeAdmin'
 				   v-if='showPasswordField' />
 
             <Button @click="onBecomeAdmin">
 				{{ showPasswordField ? 'Power up!' : 'Become admin' }}
 			</Button>
         </div>
-
-		<!-- TODO: Ability to change username -->
-    </div>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -37,7 +50,7 @@
     import Button from '../parts/Button.vue';
     import UserItem from '../parts/User.vue';
 	import { PrivateUserData, User } from '../../ts/models/Room';
-	import { computed, ref } from 'vue';
+	import { computed, ref, watch } from 'vue';
 	import { RoomConnection } from '../../ts/RoomConnection';
 
     const props = defineProps({
@@ -57,6 +70,27 @@
 
 	const showPasswordField = ref(false);
 	const passwordValue = ref('');
+
+	const showNameField = ref(false);
+	const nameValue = ref('');
+
+	// Update the name field on the user
+	watch(() => props.user, user => {
+		if (user) {
+			nameValue.value = user.name
+		}
+	});
+
+	function onChangeName() {
+		if (showNameField.value) {
+			if (props.user && props.user.name !== nameValue.value) {
+				props.conn?.changeName(nameValue.value);
+			}
+			showNameField.value = false;
+		} else {
+			showNameField.value = true;
+		}
+	}
 
 	function onBecomeAdmin() {
 		if (!showPasswordField.value) {
