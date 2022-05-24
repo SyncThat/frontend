@@ -24,7 +24,9 @@
                 </button>
             </div>
             
-            <span class="block mt-2 text-xs text-grey-500">{{song.songInfo?.duration_string}}</span>
+            <span class="block mt-2 text-xs text-grey-500">
+				{{song.ready ? song.songInfo?.duration_string : `${song.downloadProgress.toFixed(1)}%`}}
+			</span>
         </div>
     </div>
 </template>
