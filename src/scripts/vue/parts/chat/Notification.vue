@@ -6,7 +6,7 @@
             </span>
 
             <div class="w-full">
-                <p class="text-white" v-html="message?.message"></p>
+                <p class="text-white" v-html="decodedMessage"></p>
 
                 <span class="absolute right-2 bottom-1 text-white/75 text-xs">{{formattedDate}}</span>
             </div>
@@ -19,11 +19,19 @@
 	import { PropType } from '@vue/runtime-core';
     
 	import { LogNotification } from '../../../ts/models/Chat';
-	import { formatDate } from '../../../ts/helpers/functions';
+	import { formatDate, encodeHTML, highlight, ReplaceTag } from '../../../ts/helpers/functions';
 
     const formattedDate = computed(() => {
         if(props.message){
             return formatDate(props.message?.timestamp);
+        } else {
+            return false;
+        }
+    });
+
+    const decodedMessage = computed(() => {
+        if(props.message?.message){
+            return highlight(ReplaceTag.BRACKETS, encodeHTML(props.message.message));
         } else {
             return false;
         }

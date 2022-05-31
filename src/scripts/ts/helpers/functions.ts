@@ -31,3 +31,53 @@ export function formatDurationString(forSeconds: number, withHoursIf?: number): 
 
     return hoursString + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
 }
+
+export function encodeHTML(html: string):string {
+    const textArea = document.createElement('div');
+    textArea.innerText = html;
+    
+    return textArea.innerHTML;
+}
+
+
+/**
+ * Highlight certain tags
+ * @param tags
+ * @param message
+ */
+ export enum ReplaceTag {
+	BRACKETS,
+	UNDERSCORES,
+	ASTERISKS,
+}
+
+function getRegexForTag(tag: ReplaceTag): RegExp {
+    switch(tag) {
+        case ReplaceTag.BRACKETS:
+            return /\[(.+?)\]/g;
+        case ReplaceTag.UNDERSCORES:
+            return /_(.+?)_/g;
+        case ReplaceTag.ASTERISKS:
+            return /\*(.+?)\*/g;
+        default:
+            throw new Error("Invalid state");
+    }
+}
+
+function getReplaceHtmlForTag(tag: ReplaceTag): string {
+    switch (tag) {
+        case ReplaceTag.BRACKETS:
+            return '<span class="highlight">$1</span>'
+        case ReplaceTag.UNDERSCORES:
+            return '<span class="italic">$1</span>'
+        case ReplaceTag.ASTERISKS:
+            return '<span class="font-bold">$1</span>'
+        default:
+            throw new Error("Invalid state");
+    }
+}
+
+ export function highlight(tags: ReplaceTag, message: string): string {
+	const regex = getRegexForTag(tags);
+	return message.replaceAll(regex, getReplaceHtmlForTag(tags));
+}
