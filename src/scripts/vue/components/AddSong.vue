@@ -23,7 +23,9 @@
         Accept: 'application/json'
     }
 
-	const emit = defineEmits(['song'])
+	const emit = defineEmits<{
+		(event: 'song', url: string): void,
+	}>()
     
     function addSong() {
 		const url = songURL.value;
@@ -31,7 +33,6 @@
 			return;
 		}
 
-		emit('song', url);
-
+		emit('song', url.toString());
     }
 </script>

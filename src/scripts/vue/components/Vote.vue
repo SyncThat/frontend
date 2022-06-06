@@ -19,11 +19,11 @@
 </template>
 
 <script setup lang="ts">
-    const emit = defineEmits(['vote-on-current-song']);
-
+    const emit = defineEmits<{
+		(event: 'vote-on-current-song', vote: boolean|undefined): void,
+	}>();
+	
     function voteOnSong(vote: boolean|undefined) {
-        console.log('vote on song', vote);
-        
 		emit('vote-on-current-song', vote);
     }
 </script>

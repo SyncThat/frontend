@@ -51,7 +51,9 @@
 	import Button from '../parts/Button.vue';
 	import { RoomConnection } from "../../ts/RoomConnection";
 
-	const emit = defineEmits(['add-song'])
+	const emit = defineEmits<{
+		(event: 'add-song', url: string): void,
+	}>()
 
     const props = defineProps({
         'playlist': Array as PropType<Array<Song>>,

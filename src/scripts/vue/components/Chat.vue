@@ -38,7 +38,9 @@
 	import ChatNotification from '../parts/chat/Notification.vue';
 	import Button from '../parts/Button.vue';
 
-	const emit = defineEmits(['send-chat-message']);
+	const emit = defineEmits<{
+		(event: 'send-chat-message', message: string): void,
+	}>();
 
 	const props = defineProps({
 		'messages': Array as PropType<LogMessage[]>
