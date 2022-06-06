@@ -25,6 +25,7 @@
 						  :show-controls="user.admin && showCurrentQueue"
 						  :can-move-up="index > 0"
 						  :can-move-down="index < currentList.length - 1"
+						  :users="users"
 						  @play-now="conn.forcePlayFromQueue(song)"
 						  @remove="conn.removeFromQueue(song)"
 						  @move-up="conn.moveSongInQueue(song, index - 1)"
