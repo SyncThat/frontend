@@ -108,7 +108,7 @@
 		chatWindowRef.value?.addEventListener('scroll', event => {
 			const ref = chatWindowRef.value;
 			if (ref) {
-				isStickyChat.value = ref.scrollTop + ref.clientHeight === ref.scrollHeight
+				isStickyChat.value = Math.ceil(ref.scrollTop + ref.clientHeight) >= ref.scrollHeight
 			}
 		});
 
