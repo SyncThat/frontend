@@ -1,5 +1,5 @@
 <template>
-    <div class="p-12">
+    <div class="p-12 pb-2 pt-2">
         <div class="flex flex-col">
 			<div class="mb-4">
 				<div v-if='!currentSong'>
@@ -29,7 +29,7 @@
                 </div>
             </div>
 			
-			<div class="flex justify-end w-full mb-8" v-if="currentSong?.song?.songInfo">
+			<div class="flex justify-end w-full mb-2" v-if="currentSong?.song?.songInfo">
 				<div class="flex shrink-0 gap-4">
 					<button class="flex items-center gap-2 text-sm" v-if="canSkipCurrentSong" @click.prevent="conn.skipSong()">
 						<img src="/images/remove.svg" alt="" class="w-3">
@@ -54,7 +54,7 @@
 		<!-- TODO: @FE Ghetto hiding -->
         <div id="wave" ref="waveElement" :class="{ 'h-0 overflow-hidden': !props.currentSong, 'opacity-50': !isPlaying }"></div>
 
-		<div class="flex justify-between w-full mb-8 mt-1" v-if="currentSongDuration">
+		<div class="flex justify-between w-full mb-2 mt-1" v-if="currentSongDuration">
 			<div class="text-xs text-gray-500">
 				{{ currentSongCurrentTimestamp }}
 			</div>
