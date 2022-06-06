@@ -123,6 +123,53 @@ export class RoomConnection {
 		})
 	}
 
+	/**
+	 * Vote for the current song to be skipped
+	 */
+	voteSkip() {
+		this.conn.emit('vote-skip-current-song')
+	}
+
+	/**
+	 * Force skip the current song (if possible)
+	 */
+	skipSong() {
+		this.conn.emit('skip-song');
+	}
+
+	/**
+	 * Remove a given song from the current queue.
+	 * @param song
+	 */
+	removeFromQueue(song: Song) {
+		this.conn.emit('remove-song-from-queue', {
+			key: song.key,
+		});
+	}
+
+	/**
+	 * Force play a certain song from the queue.
+	 * Note that this song has to have been fully downloaded
+	 * @param song
+	 */
+	forcePlayFromQueue(song: Song) {
+		this.conn.emit('force-play-from-queue', {
+			key: song.key,
+		})
+	}
+
+	/**
+	 * Move the song to a different position in the queue
+	 * @param song
+	 * @param newPosition zero-based position
+	 */
+	moveSongInQueue(song: Song, newPosition: number) {
+		console.log('Moving song to position', newPosition)
+		this.conn.emit('move-song-in-queue', {
+			key: song.key,
+			position: newPosition,
+		})
+	}
 
 	/**
 	 * Attempt to become an admin

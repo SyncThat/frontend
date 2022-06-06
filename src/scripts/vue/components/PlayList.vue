@@ -21,7 +21,14 @@
         <div class="flex flex-col h-full px-6 pt-4 gap-y-2 overflow-auto"
 			 :class="{ 'place-content-center place-items-center': !hasItems }">
             <div class="relative" v-for="(song, index) in currentList" :key="index">
-                <SongItem :song="song" :show-controls="user.admin && showCurrentQueue" />
+                <SongItem :song="song"
+						  :show-controls="user.admin && showCurrentQueue"
+						  :can-move-up="index > 0"
+						  :can-move-down="index < currentList.length - 1"
+						  @play-now="conn.forcePlayFromQueue(song)"
+						  @remove="conn.removeFromQueue(song)"
+						  @move-up="conn.moveSongInQueue(song, index - 1)"
+						  @move-down="conn.moveSongInQueue(song, index + 1)"/>
             </div>
 			<div class="relative" v-if='!hasItems'>
 				<!-- TODO: Format me! -->
@@ -41,6 +48,7 @@
 	import { PrivateUserData, Song, User } from '../../ts/models/Room';
 	import { computed, PropType, ref } from 'vue';
 	import Button from '../parts/Button.vue';
+	import { RoomConnection } from "../../ts/RoomConnection";
 
 	const emit = defineEmits(['add-song'])
 
@@ -49,6 +57,7 @@
 		'playedSongs': Array as PropType<Array<Song>>,
         'user': Object as PropType<PrivateUserData>,
 		'users': Array as PropType<Array<User>>,
+		'conn': Object as PropType<RoomConnection>,
 	});
 
 	const showCurrentQueue = ref(true);

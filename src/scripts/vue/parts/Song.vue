@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center" v-if='song'>
+    <div class="flex items-center" v-if='song' @mouseenter="showButtons = true" @mouseleave="showButtons = false">
         <figure class="relative shrink-0 mr-3" v-if="song.songInfo?.thumbnail">
             <img class="w-14 h-14 rounded-xl overflow-hidden" :src="song.songInfo?.thumbnail" alt="">
         </figure>
@@ -10,19 +10,36 @@
         </div>
 
         <div class="flex flex-col items-end">
-            <div class="flex shrink-0 gap-2 pl-4">
-                <a :href="song.songInfo?.webpage_url" target="_blank">
+            <div class="flex shrink-0 gap-2 pl-4" v-if="showButtons">
+				<!-- TODO: Fix icon colors -->
+				<!-- TODO: Should be drag & drop -->
+				<button v-if="showControls && canMoveUp" @click="$emit('move-up')" class="fill" title="Move the song up one position">
+					<img src="/images/green-arrow-up.svg" alt="" class="w-3">
+				</button>
+				<button v-if="showControls && canMoveDown" @click="$emit('move-down')" title="Move the song down one position">
+					<img src="/images/red-arrow-down.svg" alt="" class="w-3">
+				</button>
+
+                <a :href="song.songInfo?.webpage_url" target="_blank" title="Original link to the song">
                     <img src="/images/link.svg" alt="" class="w-3">
                 </a>
 
-                <button v-if="showControls" @click="$emit('play-now')">
+				<!-- TODO: Add confirmation dialog for this action -->
+                <button v-if="showControls && song.ready" @click="$emit('play-now')" title="Force the song to be played right now">
                     <img src="/images/play.svg" alt="" class="w-3">
                 </button>
 
-                <button v-if="showControls" @click="$emit('remove')">
+				<!-- TODO: Add confirmation dialog for this action -->
+                <button v-if="showControls" @click="$emit('remove')" title="Remove the song from the queue">
                     <img src="/images/remove.svg" alt="" class="w-3">
                 </button>
             </div>
+			<div class="flex shrink-0 gap-2 pl-4" v-else>
+				<!-- TODO: @FE Fix this nasty ass way of taking the same space as other buttons -->
+				<button disabled>
+					<img src="/images/green-arrow-up.svg" alt="" class="w-3 invisible" >
+				</button>
+			</div>
             
             <span class="block mt-2 text-xs text-grey-500">
 				{{song.ready ? durationString : `${song.downloadProgress.toFixed(1)}%`}}
@@ -34,15 +51,19 @@
 <script setup lang="ts">
     import { PropType } from '@vue/runtime-core';
     import {Song} from '../../ts/models/Room';
-	import { computed } from 'vue';
+	import { computed, ref } from "vue";
 	import { formatDurationString } from '../../ts/helpers/functions';
 
-	defineEmits(['play-now', 'remove'])
+	defineEmits(['play-now', 'remove', 'move-up', 'move-down'])
     
     const props = defineProps({
         'song': Object as PropType<Song>,
 		'showControls': Boolean,
+		'canMoveUp': Boolean,
+		'canMoveDown': Boolean,
     });
+
+	const showButtons = ref<boolean>(false);
 
 	const durationString = computed(() => props.song ? formatDurationString(props.song.durationInSeconds) : '-')
 

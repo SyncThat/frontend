@@ -34,12 +34,18 @@
 			
 			<div class="flex justify-end w-full mb-8" v-if="currentSong?.song?.songInfo">
 				<div class="flex shrink-0 gap-4">
-					<a class="flex items-center gap-2 text-sm" :href="currentSong.song.songInfo.webpage_url" target="_blank">
+					<button class="flex items-center gap-2 text-sm" v-if="canSkipCurrentSong" @click.prevent="conn.skipSong()">
+						<img src="/images/remove.svg" alt="" class="w-3">
+						Force skip
+					</button>
+
+
+					<button class="flex items-center gap-2 text-sm" :href="currentSong.song.songInfo.webpage_url" target="_blank">
 						<img src="/images/link.svg" alt="" class="w-3">
 						Song link
-					</a>
+					</button>
 
-					<button class="flex items-center gap-2 text-sm" href="#" target="_blank">
+					<button class="flex items-center gap-2 text-sm" @click.prevent="conn.voteSkip()">
 						<img src="/images/skip.svg" alt="" class="w-3">
 
 						Vote skip
@@ -113,6 +119,11 @@
 			return formatDurationString( props.currentSong.song.durationInSeconds );
 		}
 	});
+	const canSkipCurrentSong = computed(() => props.user?.admin || (
+		props.currentSong?.song?.requestedBy && props.currentSong?.song?.requestedBy === props.user?.publicId
+	));
+
+
 
 	watch(() => props.currentSong, (newValue: CurrentSong|undefined, oldValue: CurrentSong|undefined) => {
 		console.log('current song changed');
