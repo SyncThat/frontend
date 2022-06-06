@@ -8,7 +8,7 @@
             <figure class="relative mr-2">
                 <!-- TODO: Emoticon image -->
                 <div class="flex justify-center items-center w-8 h-8 rounded-full bg-white/10">
-                    <span class="text-lg" v-html="'&#x1F480;'"></span>
+                    <span class="text-lg">{{ user.emoji }}</span>
                 </div>
             </figure>
             <div class="flex flex-col">

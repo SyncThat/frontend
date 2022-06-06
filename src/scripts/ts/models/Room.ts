@@ -6,7 +6,8 @@ export interface PrivateUserData {
     privateId: string,
     publicId: string,
     name: string,
-    admin: boolean
+    admin: boolean,
+    emoji?: string,
 }
 
 export interface User {
