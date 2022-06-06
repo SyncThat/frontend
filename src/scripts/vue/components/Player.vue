@@ -54,7 +54,8 @@
 			</div>
         </div>
 
-        <div id="wave" ref="waveElement"></div>
+		<!-- TODO: @FE Ghetto hiding -->
+        <div id="wave" ref="waveElement" :class="{ 'h-0 overflow-hidden': !props.currentSong }"></div>
 
 		<div class="flex justify-between w-full mb-8 mt-1" v-if="currentSongDuration">
 			<div class="text-xs text-gray-500">
