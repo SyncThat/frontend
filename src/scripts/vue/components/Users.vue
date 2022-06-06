@@ -84,7 +84,9 @@
 	function onChangeName() {
 		if (showNameField.value) {
 			if (props.user && props.user.name !== nameValue.value) {
-				props.conn?.changeName(nameValue.value);
+				props.conn?.changeUser({
+					name: nameValue.value,
+				});
 			}
 			showNameField.value = false;
 		} else {

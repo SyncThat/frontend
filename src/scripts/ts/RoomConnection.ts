@@ -184,12 +184,10 @@ export class RoomConnection {
 
 	/**
 	 * Change the name of the current user
-	 * @param newName
+	 * @param change
 	 */
-	changeName(newName: string): void {
-		this.conn.emit('change-name', {
-			name: newName,
-		});
+	changeUser(change: ChangeUserMessage): void {
+		this.conn.emit('change-user', change);
 	}
 	
 	saveUser() {		
@@ -218,3 +216,14 @@ interface StoredUser {
 	name?: string;
 }
 
+/**
+ * Message to send to the server to change something about the current user
+ */
+export interface ChangeUserMessage {
+	/** New name */
+	name?: string,
+	/** New emoji (either :name: or actual emoji) */
+	emoji?: string,
+	/** Request a new random emoji (takes priority over emoji field) */
+	randomEmoji?: boolean,
+}
