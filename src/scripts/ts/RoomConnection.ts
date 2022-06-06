@@ -91,16 +91,21 @@ export class RoomConnection {
 		this.conn.connect();
 	}
 
-	addNoticeCallback(callback: (notice: Notice) => void): void {
-		this.conn.on('notice', callback);
-	}
-
+	/**
+	 * Download a song and add it to the queue
+	 * @param song URL
+	 */
 	downloadSong(song: string) {
 		this.conn.emit('queue-song', {
 			url: song,
 		});
 	}
 
+	/**
+	 * Skip to the timestamp for the currently playing song
+	 * @param toSeconds The number of seconds
+	 * @param atTimestamp At which timestamp you were at that number of seconds
+	 */
 	skipToTimestamp(toSeconds: number, atTimestamp?: number): void {
 		this.conn.emit('skip-to-timestamp', {
 			toSeconds,
@@ -108,6 +113,10 @@ export class RoomConnection {
 		})
 	}
 
+	/**
+	 * Vote a Yay/Nay/'No Vote' on the current song
+	 * @param vote true = yay, false = nay, undefined = no vote
+	 */
 	voteOnCurrentSong(vote: boolean|undefined) {
 		this.conn.emit('vote-on-current-song', {
 			vote
@@ -115,6 +124,10 @@ export class RoomConnection {
 	}
 
 
+	/**
+	 * Attempt to become an admin
+	 * @param password
+	 */
 	becomeAdmin(password: string): void {
 		console.log('Become admin', password);
 		this.conn.emit('become-admin', {
@@ -122,6 +135,10 @@ export class RoomConnection {
 		});
 	}
 
+	/**
+	 * Change the name of the current user
+	 * @param newName
+	 */
 	changeName(newName: string): void {
 		this.conn.emit('change-name', {
 			name: newName,
