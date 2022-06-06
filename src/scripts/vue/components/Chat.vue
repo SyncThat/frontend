@@ -2,12 +2,14 @@
 	<div class="flex-1 px-6 pb-6">
 		<div class="relative w-full h-full">
 			<div class="flex flex-col absolute top-0 left-0 w-full h-full bg-blue-900 rounded-t-xl">
-				<div class="h-full px-8 py-6 overflow-auto">
+				<div class="h-full px-8 py-6 overflow-auto" ref="chatWindowRef">
 					<template v-for="message of messages" :key="message.id">
 						<ChatMessage :message="getAsChatMessage(message)" v-if="isChat(message?.type)"></ChatMessage>
 						<ChatNotification :message="getAsNotification(message)" v-else-if="isNotification(message?.type)"></ChatNotification>
 					</template>
 				</div>
+
+				<!-- TODO: Show scroll indicator if not sticky -->
 
 				<div class="flex items-center relative mt-auto px-8 py-2 border-t border-white/25 text-sm">
 					<div class="w-full">
@@ -30,7 +32,7 @@
 <script setup lang="ts">
 
 	import { PropType } from '@vue/runtime-core';
-	import { ref } from 'vue';
+	import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 	import { LogMessage, LogMessageType, LogChatMessage, LogNotification } from '../../ts/models/Chat';
 	import ChatMessage from '../parts/chat/Message.vue';
 	import ChatNotification from '../parts/chat/Notification.vue';
@@ -44,6 +46,23 @@
 	
 	const chatMessageBox = ref<HTMLInputElement>();
 	const showPlaceholder = ref<Boolean>(true);
+
+	const chatWindowRef = ref<HTMLDivElement>();
+	const isStickyChat = ref<Boolean>(true);
+
+	// Watch the messages to scroll the chat window to the bottom
+	watch(() => props.messages, () => scrollToNewMessages());
+
+	function scrollToNewMessages() {
+		if (isStickyChat.value && chatWindowRef.value) {
+			nextTick(() => {
+				const chatWindow = chatWindowRef.value;
+				if (chatWindow && chatWindow.scrollHeight) {
+					chatWindow.scrollTop = chatWindow.scrollHeight;
+				}
+			});
+		}
+	}
 
 	function handleBlur() {		
 		const text = chatMessageBox.value?.innerText;
@@ -83,5 +102,18 @@
 			}
 		}
 	}
+
+	onMounted(() => {
+		// Register a scroll listener to make the chat sticky
+		chatWindowRef.value?.addEventListener('scroll', event => {
+			const ref = chatWindowRef.value;
+			if (ref) {
+				isStickyChat.value = ref.scrollTop + ref.clientHeight === ref.scrollHeight
+			}
+		});
+
+		// Scroll the chat to the bottom
+		scrollToNewMessages();
+	})
 
 </script>
