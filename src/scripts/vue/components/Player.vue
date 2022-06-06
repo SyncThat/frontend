@@ -37,10 +37,10 @@
 					</button>
 
 
-					<button class="flex items-center gap-2 text-sm" :href="currentSong.song.songInfo.webpage_url" target="_blank">
+					<a class="flex items-center gap-2 text-sm" :href="currentSong.song.songInfo.webpage_url" target="_blank">
 						<img src="/images/link.svg" alt="" class="w-3">
 						Song link
-					</button>
+					</a>
 
 					<button class="flex items-center gap-2 text-sm" @click.prevent="conn.voteSkip()">
 						<img src="/images/skip.svg" alt="" class="w-3">
