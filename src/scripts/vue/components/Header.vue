@@ -11,9 +11,9 @@
 
         <div class="flex items-center" v-if='user'>
             <figure class="relative mr-2">
-                <div class="flex justify-center items-center w-8 h-8 rounded-full bg-white/10" @click="emit('randomize-emoji')">
+                <button class="flex justify-center items-center w-8 h-8 rounded-full bg-white/10" @click="emit('randomize-emoji')">
                     <span class="text-lg">{{ user.emoji }}</span>
-                </div>
+                </button>
             </figure>
             <div class="flex flex-col">
                 <span class="font-medium text-sm">
