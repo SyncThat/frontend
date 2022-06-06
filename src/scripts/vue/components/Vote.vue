@@ -22,7 +22,7 @@
     const emit = defineEmits<{
 		(event: 'vote-on-current-song', vote: boolean|undefined): void,
 	}>();
-	
+
     function voteOnSong(vote: boolean|undefined) {
 		emit('vote-on-current-song', vote);
     }

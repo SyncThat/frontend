@@ -2,15 +2,18 @@
 	<div class="flex text-white bg-blue-800">
 		<div class="flex flex-col shrink-0 w-3/12 h-screen">
 			<Logo></Logo>
-			<Playlist :playlist="queue" :played-songs="playedSongs" @add-song="downloadSong" :user="me" :users="users" :conn="conn" />
+			<Playlist :playlist="queue" :played-songs="playedSongs" @add-song="downloadSong" :user="me" :users="users" :conn="conn" :class="{ 'opacity-20': !hasJoinedSync }" />
 		</div>
 		
 		<div class="flex flex-col grow h-screen overflow-hidden">
-			<Header :roomName="'🍺 Lekker lekker lekker'" :user='me' @randomize-emoji="conn.changeUser({ randomEmoji: true })" />
-			
-			<div class="flex flex-wrap h-full">	
+			<Header :roomName="'🍺 Lekker lekker lekker'"
+					:user='me'
+					v-model:is-playing="isPlaying"
+					@randomize-emoji="conn.changeUser({ randomEmoji: true })" />
+
+			<div class="flex flex-wrap h-full" :class="{ 'opacity-20': !hasJoinedSync }">
 				<div class="flex flex-col w-9/12">					
-					<Player :currentSong="currentSong" :conn='conn' :user='me' :users="users" />
+					<Player :currentSong="currentSong" :conn='conn' :user='me' :users="users" :is-playing="isPlaying" />
 
 					<Chat :messages='messages' @send-chat-message="sendChatMessage" />
 				</div>
@@ -28,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, computed } from 'vue';
+import { ref, computed, watch } from "vue";
 
 	import Logo from '../vue/components/Logo.vue';
 	import Playlist from './components/PlayList.vue';
@@ -41,6 +44,8 @@
 	import { CurrentSong, PrivateUserData, Song, User} from '../ts/models/Room';
 	import { LogMessage } from '../ts/models/Chat';
 
+	const isPlaying = ref<boolean>(false);
+	const hasJoinedSync = ref<boolean>(false);
 	const queue = ref<Song[]|undefined>();
 	const playedSongs = ref<Song[]|undefined>();
 	const currentSong = ref<CurrentSong|undefined>();
@@ -59,6 +64,12 @@
 		return combinedMessages.sort( (message1, message2) => message1.timestamp - message2.timestamp );
 	});
 
+	watch(isPlaying, value => {
+		if (value) {
+			hasJoinedSync.value = true
+		}
+	});
+
 	function downloadSong(song: string) {
 		conn.downloadSong(song);
 	}
@@ -71,4 +82,6 @@
 		console.log(vote);
 		conn.voteOnCurrentSong(vote);
 	}
+
+	// TODO: Show an initial modal to join the sync instead of ghetto opacity option
 </script>

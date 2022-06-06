@@ -2,9 +2,6 @@
     <div class="p-12">
         <div class="flex flex-col">
 			<div class="mb-4">
-				<Button @click="pauseHandler()" v-if="isPlaying">Stop listening</Button>
-				<Button @click="playHandler()" v-else>Start listening</Button>
-								
 				<div v-if='!currentSong'>
 					<span class="block">Nothing playing right now</span>
 				</div>
@@ -55,7 +52,7 @@
         </div>
 
 		<!-- TODO: @FE Ghetto hiding -->
-        <div id="wave" ref="waveElement" :class="{ 'h-0 overflow-hidden': !props.currentSong }"></div>
+        <div id="wave" ref="waveElement" :class="{ 'h-0 overflow-hidden': !props.currentSong, 'opacity-50': !isPlaying }"></div>
 
 		<div class="flex justify-between w-full mb-8 mt-1" v-if="currentSongDuration">
 			<div class="text-xs text-gray-500">
@@ -84,7 +81,6 @@
 	import { formatDurationString } from '../../ts/helpers/functions';
 
     const waveElement: Ref<HTMLElement|undefined> = ref(undefined);
-    const isPlaying = ref(false);
 	const currentSongAtSeconds = ref(0);
 
 	// The wavesurfer instance.
@@ -98,6 +94,7 @@
 		'conn': Object as PropType<RoomConnection>,
         'user': Object as PropType<PrivateUserData>,
 		'users': Object as PropType<User[]>,
+		'isPlaying': Boolean,
     });
 
 	const currentRequestedBy = computed((publicId: string) => {
@@ -107,7 +104,7 @@
 		return user ? user.name : 'Unknown';
 	});
 	const currentSongCurrentTimestamp = computed(() => {
-		if (!props.currentSong || !isPlaying || !props.currentSong?.song?.durationInSeconds) {
+		if (!props.currentSong || !props.isPlaying || !props.currentSong?.song?.durationInSeconds) {
 			return '-';
 		} else {
 			return formatDurationString( currentSongAtSeconds.value, props.currentSong.song.durationInSeconds);
@@ -125,11 +122,15 @@
 	));
 
 
-
 	watch(() => props.currentSong, (newValue: CurrentSong|undefined, oldValue: CurrentSong|undefined) => {
-		console.log('current song changed');
-		
 		handlePlayingSong(newValue, oldValue)
+	});
+	watch(() => props.isPlaying, isPlaying => {
+		if (isPlaying) {
+			handlePlayingSong(props.currentSong, props.currentSong);
+		} else {
+			waveSurfer.pause();
+		}
 	});
 
 	function handlePlayingSong(current: CurrentSong|undefined, previous: CurrentSong|undefined = undefined) {
@@ -146,8 +147,9 @@
 
 		// Check if a new song should be loaded
 		if (!previous || previous.song.key !== current.song.key) {
-			waveSurfer.stop();
+			waveSurfer.pause();
 			waveSurfer.load(`${Config.getMediaHost()}/${current.song.key}.mp3`, [], 'auto', current.song.durationInSeconds);
+			waveSurfer.stop();
 		}
 		// Check if a new Waveform is available that we've currently not loaded in yet.
 		if (current.song.waveformGenerated && currentLoadedWaveform !== current.song.key) {
@@ -164,7 +166,13 @@
 			console.log('Future...');
 			// Event in the future... Wait for it.
 			playDelayTimeout = setTimeout(() => {
-				waveSurfer.play(current.lastCurrentSeconds);
+				if (props.isPlaying) {
+					waveSurfer.play(current.lastCurrentSeconds);
+				} else {
+					waveSurfer.skip(current.lastCurrentSeconds - waveSurfer.getCurrentTime());
+					currentSongAtSeconds.value = waveSurfer.getCurrentTime();
+				}
+
 			}, now - current.eventTimestamp);
 		} else {
 			// Calculate the number of seconds passed since the event
@@ -178,20 +186,15 @@
 			const secondsOffset = Math.abs(shouldBeAtSeconds - currentSeconds);
 			if (secondsOffset > 1 || !waveSurfer.isPlaying()) {
 				console.log('Skipping to', shouldBeAtSeconds);
-				waveSurfer.play(shouldBeAtSeconds);
+				if (props.isPlaying) {
+					waveSurfer.play(shouldBeAtSeconds);
+				} else {
+					waveSurfer.skip(shouldBeAtSeconds - waveSurfer.getCurrentTime());
+					currentSongAtSeconds.value = waveSurfer.getCurrentTime();
+				}
 			}
 		}
 	}
-
-    function playHandler() {
-        isPlaying.value = true;
-		handlePlayingSong(props.currentSong, props.currentSong);
-    }
-
-    function pauseHandler() {
-        waveSurfer.pause();
-        isPlaying.value = false;
-    }
 
     onMounted(() => {
 		const element = waveElement.value;
@@ -210,11 +213,12 @@
             normalize: true,
 			responsive: true,
 			mediaControls: false,
-        }); 
+			hideScrollbar: true,
+        });
 
 		// Mount events
 		waveSurfer.on('audioprocess', (args: number) => {
-			currentSongAtSeconds.value = Math.floor(args);
+			currentSongAtSeconds.value = args;
 		})
 
 		waveSurfer.on('error', (args: any) => {
@@ -239,13 +243,19 @@
 			console.log('ready', args, waveSurfer.isPlaying(), waveSurfer.isReady);
 		})
         
-		waveSurfer.on('seek', (args: any) => {            
+		waveSurfer.on('seek', (args: any) => {
+			// We're gonna ignore any seeking if they aren't synced
+			if (!props.isPlaying) {
+				return;
+			}
+
             if(props.user?.admin) {
                 setTimeout(() => {
                     props.conn?.skipToTimestamp(waveSurfer.getCurrentTime());
                 });
             } else {
-                playHandler();
+				// Just force the user back to the current position
+				handlePlayingSong(props.currentSong, props.currentSong);
             }
 		})
 

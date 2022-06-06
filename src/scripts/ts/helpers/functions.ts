@@ -22,6 +22,8 @@ export function formatDate(date:number) {
 export function formatDurationString(forSeconds: number, withHoursIf?: number): string {
     const calculateHoursFor = withHoursIf === undefined ? forSeconds : withHoursIf;
 
+    forSeconds = Math.floor(forSeconds);
+
     const seconds = forSeconds % 60;
     const minutesInSeconds = ( forSeconds % ( 60 * 60 ) ) - seconds;
     const minutes = minutesInSeconds / 60;
