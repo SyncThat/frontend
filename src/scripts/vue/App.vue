@@ -43,6 +43,7 @@ import { ref, computed, watch } from "vue";
 	import { RoomConnection } from '../ts/RoomConnection';
 	import { CurrentSong, PrivateUserData, Song, User} from '../ts/models/Room';
 	import { LogMessage } from '../ts/models/Chat';
+	import { manager } from '../ts/notifications';
 
 	const isPlaying = ref<boolean>(false);
 	const hasJoinedSync = ref<boolean>(false);
@@ -53,6 +54,7 @@ import { ref, computed, watch } from "vue";
 	const me = ref<PrivateUserData|undefined>();
 	const logMessages = ref<LogMessage[]|undefined>();
 	const privateMessages = ref<LogMessage[]>([]);
+	const hasNotificationsEnabled = manager.accessRef();
 
 	const conn = new RoomConnection(1, queue, playedSongs, currentSong, users, me, logMessages, privateMessages);
 
@@ -66,9 +68,18 @@ import { ref, computed, watch } from "vue";
 
 	watch(isPlaying, value => {
 		if (value) {
+			// Request for notification permission the first time join is pressed
+			if (!hasJoinedSync.value && !hasNotificationsEnabled.value) {
+				manager.requestPermission();
+			}
+
 			hasJoinedSync.value = true
 		}
 	});
+
+	// Configure the browser notifications
+	manager.watchMessageStreams(me, logMessages, privateMessages);
+
 
 	function downloadSong(song: string) {
 		conn.downloadSong(song);

@@ -3,6 +3,7 @@ import { CurrentSong, Join, Notice, PrivateUserData, Song, User } from './models
 import { LogMessage } from './models/Chat';
 import { Ref, ref, UnwrapRef } from 'vue';
 import { Config } from './Config';
+import { getFromStorage, setInStorage } from "./helpers/storage";
 
 export class RoomConnection {
 
@@ -191,17 +192,16 @@ export class RoomConnection {
 	}
 	
 	saveUser() {		
-		window.localStorage.setItem('existingUser', JSON.stringify({
+		setInStorage('existingUser', {
 			privateId: this.me.value?.privateId,
 			publicId: this.me.value?.publicId,
 			name: this.me.value?.name,
 			admin: this.me.value?.admin,
-		}));
+		});
 	}
 
 	getUser(): StoredUser|undefined {
-		let item = window.localStorage.getItem('existingUser');
-		return item ? JSON.parse(item) : undefined;
+		return getFromStorage('existingUser');
 	}
 
 	sendChatMessage(message: string): void {
