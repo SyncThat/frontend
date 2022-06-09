@@ -215,6 +215,7 @@
 			responsive: true,
 			mediaControls: false,
 			hideScrollbar: true,
+			minPxPerSec: 1,
         });
 
 		// Mount events
