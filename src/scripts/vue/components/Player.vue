@@ -52,7 +52,7 @@
         </div>
 
 		<!-- TODO: @FE Ghetto hiding -->
-        <div id="wave" ref="waveElement" :class="{ 'h-0 overflow-hidden': !props.currentSong, 'opacity-50': !isPlaying }"></div>
+        <div id="wave" ref="waveElement" class="overflow-hidden" :class="{ 'h-0': !props.currentSong, 'opacity-50': !isPlaying }"></div>
 
 		<div class="flex justify-between w-full mb-2 mt-1" v-if="currentSongDuration">
 			<div class="text-xs text-gray-500">
@@ -210,6 +210,7 @@
             barGap: 2,
             progressColor: '#57ECED',
             waveColor: '#B4B7BC',
+			height: 256,
             normalize: true,
 			responsive: true,
 			mediaControls: false,
@@ -267,3 +268,9 @@
 		})
     });
 </script>
+
+<style>
+#wave {
+	max-height: 128px;
+}
+</style>
