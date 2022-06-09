@@ -37,6 +37,7 @@
         
             message = highlight(ReplaceTag.ASTERISKS, message);
             message = highlight(ReplaceTag.UNDERSCORES, message); 
+            message = highlight(ReplaceTag.HREF, message); 
 
             return message;
         } else {

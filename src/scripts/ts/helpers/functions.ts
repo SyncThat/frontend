@@ -51,6 +51,7 @@ export function encodeHTML(html: string):string {
 	BRACKETS,
 	UNDERSCORES,
 	ASTERISKS,
+    HREF
 }
 
 function getRegexForTag(tag: ReplaceTag): RegExp {
@@ -61,12 +62,15 @@ function getRegexForTag(tag: ReplaceTag): RegExp {
             return /_(.+?)_/g;
         case ReplaceTag.ASTERISKS:
             return /\*(.+?)\*/g;
+        case ReplaceTag.HREF:
+            return /((?:https?:\/\/)(?:[\da-z.-]+)\.(?:[a-z.]{2,6})(?:[/\w.-]*)*\/?\S)/g;
         default:
             throw new Error("Invalid state");
     }
 }
 
 function getReplaceHtmlForTag(tag: ReplaceTag): string {
+    
     switch (tag) {
         case ReplaceTag.BRACKETS:
             return '<span class="highlight">$1</span>'
@@ -74,6 +78,8 @@ function getReplaceHtmlForTag(tag: ReplaceTag): string {
             return '<span class="italic">$1</span>'
         case ReplaceTag.ASTERISKS:
             return '<span class="font-bold">$1</span>'
+        case ReplaceTag.HREF:
+            return '<a class="underline" href="$1" target="_blank" rel="noopener nofollow">$1</a>'
         default:
             throw new Error("Invalid state");
     }
