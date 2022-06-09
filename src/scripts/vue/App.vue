@@ -6,7 +6,7 @@
 		</div>
 		
 		<div class="flex flex-col grow h-screen overflow-hidden">
-			<Header :roomName="'🍺 Lekker lekker lekker'"
+			<Header :roomName="roomName"
 					:user='me'
 					v-model:is-playing="isPlaying"
 					@randomize-emoji="conn.changeUser({ randomEmoji: true })" />
@@ -54,6 +54,7 @@ import { ref, computed, watch } from "vue";
 	const me = ref<PrivateUserData|undefined>();
 	const logMessages = ref<LogMessage[]|undefined>();
 	const privateMessages = ref<LogMessage[]>([]);
+	const roomName = ref<string>('🍺 Lekker lekker lekker');
 
 	const conn = new RoomConnection(1, queue, playedSongs, currentSong, users, me, logMessages, privateMessages);
 
@@ -82,6 +83,8 @@ import { ref, computed, watch } from "vue";
 		}
 	});
 
+	watch(currentSong, setPageTitle);
+	watch(roomName, setPageTitle);
 
 
 	function downloadSong(song: string) {
@@ -95,6 +98,19 @@ import { ref, computed, watch } from "vue";
 	function voteOnCurrentSong(vote: boolean|undefined) {
 		console.log(vote);
 		conn.voteOnCurrentSong(vote);
+	}
+
+	function setPageTitle() {
+		const parts = [ 'SyncThat' ];
+
+		let songTitle = currentSong.value?.song?.title;
+		if (songTitle) {
+			parts.push(songTitle);
+		}
+
+		parts.push(roomName.value);
+
+		document.title = parts.join(' - ');
 	}
 
 	// TODO: Show an initial modal to join the sync instead of ghetto opacity option
