@@ -64,6 +64,10 @@ class NotificationManager {
 		messageStreams.forEach(stream => {
 			let lastId: string|undefined = undefined;
 
+			if (stream.value && stream.value?.length) {
+				lastId = stream.value[stream.value?.length - 1].id;
+			}
+
 			watch(stream, messages => {
 				if (messages === undefined) return;
 
@@ -80,6 +84,7 @@ class NotificationManager {
 
 					// We've found it, notify about this message.
 					this.notify(message, me.value?.publicId);
+					lastId = message.id;
 				}
 			})
 		})
@@ -98,6 +103,7 @@ class NotificationManager {
 	private notifyChat(message: LogChatMessage, currentUserId: string|undefined): void {
 		if (!this.chatBrowserNotification || message.byId === currentUserId) return;
 
+		// TODO: Icon of emoji?
 		new Notification(`${message.name}`, {
 			body: message.message,
 		});
@@ -108,6 +114,7 @@ class NotificationManager {
 		const setting = this.settings[notification.notificationType];
 		if (!setting || !setting.browser) return;
 
+		// TODO: Icon of emoji?
 		new Notification(notification.message);
 	}
 

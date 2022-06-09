@@ -86,7 +86,10 @@ export class RoomConnection {
 		})
 
 		this.conn.on('private-message', (message:LogMessage) => {
-			this.privateMessages.value.push(message);
+			this.privateMessages.value = [
+				...this.privateMessages.value,
+				message
+			];
 		})
 
 		this.conn.connect();

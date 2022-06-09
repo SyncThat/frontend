@@ -54,7 +54,6 @@ import { ref, computed, watch } from "vue";
 	const me = ref<PrivateUserData|undefined>();
 	const logMessages = ref<LogMessage[]|undefined>();
 	const privateMessages = ref<LogMessage[]>([]);
-	const hasNotificationsEnabled = manager.accessRef();
 
 	const conn = new RoomConnection(1, queue, playedSongs, currentSong, users, me, logMessages, privateMessages);
 
@@ -68,17 +67,21 @@ import { ref, computed, watch } from "vue";
 
 	watch(isPlaying, value => {
 		if (value) {
-			// Request for notification permission the first time join is pressed
-			if (!hasJoinedSync.value && !hasNotificationsEnabled.value) {
-				manager.requestPermission();
+			// Configure notifications when the user has joined the sync
+			if (!hasJoinedSync.value) {
+				// Configure the browser notifications
+				manager.watchMessageStreams(me, logMessages, privateMessages);
+
+				// Request for notification permission if not done yet
+				if (!manager.canNotify) {
+					manager.requestPermission();
+				}
 			}
 
 			hasJoinedSync.value = true
 		}
 	});
 
-	// Configure the browser notifications
-	manager.watchMessageStreams(me, logMessages, privateMessages);
 
 
 	function downloadSong(song: string) {
