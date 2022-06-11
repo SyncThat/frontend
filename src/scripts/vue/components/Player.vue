@@ -80,6 +80,10 @@
 	import { Config } from '../../ts/Config';
 	import { formatDurationString } from '../../ts/helpers/functions';
 
+	const emit = defineEmits<{
+		(event: 'update:isPlaying', isPlaying: boolean): void,
+	}>();
+
     const waveElement: Ref<HTMLElement|undefined> = ref(undefined);
 	const currentSongAtSeconds = ref(0);
 
@@ -267,6 +271,17 @@
 		waveSurfer.on('waveform-ready', (args: any) => {
 			console.log('waveform-ready', args);
 		})
+
+		// Listen to 'media buttons' (keyboard, etc)
+		navigator.mediaSession.setActionHandler('play', async function() {
+			emit('update:isPlaying', true);
+		});
+
+		navigator.mediaSession.setActionHandler('pause', function() {
+			emit('update:isPlaying', false);
+		});
+
+
     });
 </script>
 

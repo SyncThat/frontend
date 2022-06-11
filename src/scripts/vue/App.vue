@@ -13,7 +13,7 @@
 
 			<div class="flex flex-wrap h-full" :class="{ 'opacity-20': !hasJoinedSync }">
 				<div class="flex flex-col w-9/12">					
-					<Player :currentSong="currentSong" :conn='conn' :user='me' :users="users" :is-playing="isPlaying" />
+					<Player :currentSong="currentSong" :conn='conn' :user='me' :users="users" v-model:is-playing="isPlaying" />
 
 					<Chat :messages='messages' @send-chat-message="sendChatMessage" />
 				</div>
