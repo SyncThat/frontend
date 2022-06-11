@@ -13,9 +13,14 @@ export interface PrivateUserData {
 export interface User {
     id: string,
     name: string,
-    connected: boolean,
     admin: boolean,
     emoji?: string
+    state: {
+        connected: boolean,
+        listening: boolean,
+        typing: boolean,
+        active: boolean,
+    }
 }
 
 export interface Song {

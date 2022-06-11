@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 
 	import Logo from '../vue/components/Logo.vue';
 	import Playlist from './components/PlayList.vue';
@@ -81,6 +81,8 @@ import { ref, computed, watch } from "vue";
 
 			hasJoinedSync.value = true
 		}
+
+		conn.updatePlayState(value);
 	});
 
 	watch(currentSong, setPageTitle);
@@ -96,7 +98,6 @@ import { ref, computed, watch } from "vue";
 	}
 
 	function voteOnCurrentSong(vote: boolean|undefined) {
-		console.log(vote);
 		conn.voteOnCurrentSong(vote);
 	}
 
@@ -113,5 +114,17 @@ import { ref, computed, watch } from "vue";
 		document.title = parts.join(' - ');
 	}
 
+
 	// TODO: Show an initial modal to join the sync instead of ghetto opacity option
+
+	onMounted(() => {
+		// Listen to a bunch of events to update the active state
+		const sol = () => conn.signOfLife();
+		document.addEventListener('scroll', sol);
+		document.addEventListener('mousemove', sol);
+		document.addEventListener('touchmove', sol);
+		document.addEventListener('touchstart', sol);
+		document.addEventListener('click', sol);
+		document.addEventListener('keyup', sol);
+	});
 </script>

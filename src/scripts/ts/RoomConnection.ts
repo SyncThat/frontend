@@ -16,6 +16,8 @@ export class RoomConnection {
 	private logMessages: Ref<LogMessage[]|undefined>;
 	private privateMessages: Ref<LogMessage[]>;
 
+	private lastSignOfLife: number;
+
 	constructor(
 		room: number, 
 		queue: Ref<UnwrapRef<Song[]|undefined>>,
@@ -33,6 +35,7 @@ export class RoomConnection {
 		this.me = me;
 		this.logMessages = logMessages;
 		this.privateMessages = privateMessages;
+		this.lastSignOfLife = new Date().getTime();
 
 		this.conn = io(Config.getBackendHost(),{
 			path: '/rooms/ws',
@@ -192,6 +195,27 @@ export class RoomConnection {
 	 */
 	changeUser(change: ChangeUserMessage): void {
 		this.conn.emit('change-user', change);
+	}
+
+	/**
+	 * Notify the server about our current 'is playing' state
+	 * @param isPlaying
+	 */
+	updatePlayState(isPlaying: boolean): void {
+		this.conn.emit('change-user-is-playing', {
+			isPlaying,
+		});
+	}
+
+	/**
+	 * Let the server know that the user is active (in some way)
+	 */
+	signOfLife(): void {
+		const now = new Date().getTime();
+		if (now - this.lastSignOfLife > 500) { // Only send a SOL (max) once per 0.5 sec
+			this.lastSignOfLife = now;
+			this.conn.emit('user-sign-of-life');
+		}
 	}
 	
 	saveUser() {		
