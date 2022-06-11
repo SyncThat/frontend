@@ -208,6 +208,16 @@ export class RoomConnection {
 	}
 
 	/**
+	 * Notify the server about our current 'is typing' state
+	 * @param isTyping
+	 */
+	updateTypingState(isTyping: boolean): void {
+		this.conn.emit('change-user-is-typing', {
+			isTyping,
+		});
+	}
+
+	/**
 	 * Let the server know that the user is active (in some way)
 	 */
 	signOfLife(): void {

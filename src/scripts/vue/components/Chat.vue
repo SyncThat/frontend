@@ -24,6 +24,8 @@
 						<Button class="shrink-0" @click.prevent="sendMessage">Send</Button>
 					</div>
 				</div>
+
+				<!-- TODO: Add typing indicator -->
 			</div>
 		</div>
 	</div>
@@ -32,7 +34,7 @@
 <script setup lang="ts">
 
 	import { PropType } from '@vue/runtime-core';
-	import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+	import { nextTick, onMounted, ref, watch } from "vue";
 	import { LogMessage, LogMessageType, LogChatMessage, LogNotification } from '../../ts/models/Chat';
 	import ChatMessage from '../parts/chat/Message.vue';
 	import ChatNotification from '../parts/chat/Notification.vue';
@@ -40,20 +42,40 @@
 
 	const emit = defineEmits<{
 		(event: 'send-chat-message', message: string): void,
+		(event: 'is-typing', isTyping: boolean): void,
 	}>();
 
 	const props = defineProps({
-		'messages': Array as PropType<LogMessage[]>
+		'messages': Array as PropType<LogMessage[]>,
 	});
-	
+
 	const chatMessageBox = ref<HTMLInputElement>();
 	const showPlaceholder = ref<Boolean>(true);
 
 	const chatWindowRef = ref<HTMLDivElement>();
 	const isStickyChat = ref<Boolean>(true);
+	const currentChatMessage = ref<string>('');
+	const isTyping = ref<boolean>(false);
 
 	// Watch the messages to scroll the chat window to the bottom
 	watch(() => props.messages, () => scrollToNewMessages());
+
+	// Emit isTyping state
+	let isTypingTimeout: NodeJS.Timeout|undefined = undefined;
+	watch(currentChatMessage, message => {
+		clearTimeout(isTypingTimeout);
+		if (message) {
+			isTyping.value = true;
+			isTypingTimeout = setTimeout(() => {
+				isTyping.value = false;
+			}, 5000);
+		} else {
+
+			isTyping.value = false;
+		}
+	});
+	watch(isTyping, value => emit("is-typing", value));
+
 
 	function scrollToNewMessages() {
 		if (isStickyChat.value && chatWindowRef.value) {
@@ -101,11 +123,17 @@
 				emit('send-chat-message', chatMessage);
 	
 				chatMessageBox.value.innerText = '';
+				currentChatMessage.value = '';
 			}
 		}
 	}
 
 	onMounted(() => {
+		// Add key listener to chat message box to update the current message in a ref (which we can watch)
+		chatMessageBox.value?.addEventListener('keyup', () => {
+			currentChatMessage.value = chatMessageBox.value?.innerText ?? '';
+		});
+
 		// Register a scroll listener to make the chat sticky
 		chatWindowRef.value?.addEventListener('scroll', event => {
 			const ref = chatWindowRef.value;

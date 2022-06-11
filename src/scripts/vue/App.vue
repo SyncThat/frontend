@@ -15,7 +15,9 @@
 				<div class="flex flex-col w-9/12">					
 					<Player :currentSong="currentSong" :conn='conn' :user='me' :users="users" v-model:is-playing="isPlaying" />
 
-					<Chat :messages='messages' @send-chat-message="sendChatMessage" />
+					<Chat :messages='messages'
+						  @send-chat-message="sendChatMessage"
+						  @is-typing="state => conn.updateTypingState(state)" />
 				</div>
 
 				<div class="flex flex-col h-full w-3/12 bg-blue-500">

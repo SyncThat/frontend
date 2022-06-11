@@ -15,7 +15,9 @@
 
             <span class="text-sm text-white/75">
 				{{ user.state.listening ? 'Sync' : 'Paused' }}
-				<span class="text-white font-medium">{{ user.admin ? 'DJ' : 'Listener' }}</span>
+				<span class="text-white font-medium">
+					{{ user.state.typing ? 'Typer' : (user.admin ? 'DJ' : 'Listener') }}
+				</span>
 			</span>
         </div>
     </div>
