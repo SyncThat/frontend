@@ -23,10 +23,11 @@
             <div class="relative" v-for="(song, index) in currentList" :key="index">
                 <SongItem :song="song"
 						  :show-controls="user.admin && showCurrentQueue"
+						  :show-play-now="user.admin && !showCurrentQueue"
 						  :can-move-up="index > 0"
 						  :can-move-down="index < currentList.length - 1"
 						  :users="users"
-						  @play-now="conn.forcePlayFromQueue(song)"
+						  @play-now="onPlaySong(song)"
 						  @remove="conn.removeFromQueue(song)"
 						  @move-up="conn.moveSongInQueue(song, index - 1)"
 						  @move-down="conn.moveSongInQueue(song, index + 1)"/>
@@ -68,5 +69,14 @@
 	const currentList = computed(() => showCurrentQueue.value
 		? props.playlist : props.playedSongs)
 	const hasItems = computed(() => currentList.value && currentList.value.length > 0);
+
+	function onPlaySong(song: Song) {
+		if (showCurrentQueue.value) {
+			props.conn?.forcePlayFromQueue(song)
+		} else if (song.songInfo?.webpage_url) {
+			props.conn?.downloadSong(song.songInfo.webpage_url)
+			showCurrentQueue.value = true;
+		}
+	}
 
 </script>

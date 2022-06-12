@@ -30,7 +30,7 @@
                 </a>
 
 				<!-- TODO: Add confirmation dialog for this action -->
-                <button v-if="showControls && song.ready" @click="emit('play-now')" title="Force the song to be played right now">
+                <button v-if="(showControls && song.ready) || showPlayNow" @click="emit('play-now')" title="Force the song to be played right now">
                     <img src="/images/play.svg" alt="" class="w-3">
                 </button>
 
@@ -69,6 +69,7 @@
     const props = defineProps({
         'song': Object as PropType<Song>,
 		'showControls': Boolean,
+		'showPlayNow': Boolean,
 		'canMoveUp': Boolean,
 		'canMoveDown': Boolean,
 		'users': Array as PropType<Array<ModelUser>>,
