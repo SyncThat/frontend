@@ -75,7 +75,6 @@
 			props.conn?.forcePlayFromQueue(song)
 		} else if (song.songInfo?.webpage_url) {
 			props.conn?.downloadSong(song.songInfo.webpage_url)
-			showCurrentQueue.value = true;
 		}
 	}
 
