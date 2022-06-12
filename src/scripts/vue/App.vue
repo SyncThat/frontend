@@ -21,9 +21,10 @@
 				</div>
 
 				<div class="flex flex-col h-full w-3/12 bg-blue-500">
-					<Vote @vote-on-current-song="voteOnCurrentSong" />
+					<Vote :user="me" :current-song="currentSong"
+						  @vote-on-current-song="voteOnCurrentSong" />
 
-					<Users :users="users" :conn='conn' :user='me' />
+					<Users :users="users" :conn='conn' :user='me' :votes="currentSong?.song?.likedDisliked" />
 				</div>
 			</div>
 		</div>

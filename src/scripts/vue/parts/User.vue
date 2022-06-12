@@ -7,6 +7,12 @@
             </div>
 
             <span class="status absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ring-4 ring-grey-800" :class="statusIndicatorClasses"></span>
+
+			<span class="absolute left-0 ring-4 rounded-full top-0" v-if="vote !== undefined">
+				<img src="/images/green-arrow-up.svg" alt="" class="w-3" v-if="vote">
+				<img src="/images/red-arrow-down.svg" alt="" class="w-3" v-else>
+			</span>
+
         </figure>
         <div class="flex flex-col">
             <span class="font-medium text-sm">
@@ -30,6 +36,7 @@
 
     const props = defineProps({
         'user': Object as PropType<User>,
+		'vote': Object as PropType<boolean|undefined>,
     });
 
 	const statusIndicatorClasses = computed(() => {

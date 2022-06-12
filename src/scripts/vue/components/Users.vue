@@ -3,13 +3,13 @@
         <div class="flex-grow">
 			<div v-if='currentPublicUser'>
 				<div class="mb-4 relative">
-					<UserItem :user="currentPublicUser" />
+					<UserItem :user="currentPublicUser" :vote="votes ? votes[currentPublicUser.id] : undefined" />
 				</div>
 			</div>
 
             <div>
-                <div class="mb-4 relative" v-for="(user, index) in otherUsers" :key="index">
-                    <UserItem :user="user" />
+				<div class="mb-4 relative" v-for="(user, index) in otherUsers" :key="index">
+                    <UserItem :user="user" :vote="votes ? votes[user.id] : undefined" />
                     <span v-if="index === 0" class="absolute w-full h-px -top-2 bg-grey-700"></span>
                     <span class="absolute w-full h-px -bottom-2 bg-grey-700"></span>
                 </div>
@@ -49,20 +49,21 @@
     
     import Button from '../parts/Button.vue';
     import UserItem from '../parts/User.vue';
-	import { PrivateUserData, User } from '../../ts/models/Room';
+	import { CurrentSong, PrivateUserData, User } from "../../ts/models/Room";
 	import { computed, ref, watch } from 'vue';
 	import { RoomConnection } from '../../ts/RoomConnection';
 
     const props = defineProps({
+		'votes': Object as PropType<{ [id: string]: boolean|undefined }>,
 		'user': Object as PropType<PrivateUserData>,
         'users': Array as PropType<Array<User>>,
 		'conn': Object as PropType<RoomConnection>,
     });
 
-	const currentPublicUser = computed(() => {
+	const currentPublicUser = computed<User|undefined>(() => {
 		return props.users?.find(user => user.id === props.user?.publicId);
 	})
-	const otherUsers = computed(() => {
+	const otherUsers = computed<User[]>(() => {
 		const users = props.users ? props.users : [];
 		return users.filter(user => user.id !== props.user?.publicId)
 	});

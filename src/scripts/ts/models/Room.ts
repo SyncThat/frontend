@@ -31,7 +31,7 @@ export interface Song {
     durationInSeconds: number;
     waveformGenerated?: boolean;
     songInfo?: YoutubeDlJsonDump;
-    likedDisliked: { [publicUserId: string]: boolean };
+    likedDisliked: { [publicUserId: string]: boolean|undefined };
 
     /** Public ID of the user who requested it */
     requestedBy?: string;
