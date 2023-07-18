@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col grow justify-between bg-blue-700">
+    <div class="flex flex-col grow justify-between bg-blue-700 h-full overflow-auto">
 		<!-- FE all this stuff :) -->
 		<div class="flex px-6 py-4 justify-around">
 			<button class="group cursor-pointer px-6 py-3 rounded-lg overflow-hidden uppercase text-xs font-bold tracking-wider"
